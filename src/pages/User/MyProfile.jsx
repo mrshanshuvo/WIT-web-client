@@ -190,7 +190,7 @@ const MyProfile = () => {
               View My Items
             </button>
             <button
-              onClick={() => navigate("/recovered-items")}
+              onClick={() => navigate("/my-recovered-items")}
               className="w-full text-left px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
             >
               View My Recoveries
