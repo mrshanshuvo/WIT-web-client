@@ -103,7 +103,7 @@ const AddItems = () => {
 
       if (!response.ok) throw new Error("Failed to submit item");
 
-      const data = await response.json();
+      await response.json();
 
       toast.success("Item posted successfully!", {
         position: "top-center",

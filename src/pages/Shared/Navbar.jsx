@@ -181,7 +181,7 @@ const Navbar = () => {
                   </li>
                   <li>
                     <NavLink
-                      to="/add-items"
+                      to="/add-item"
                       onClick={() => setProfileDropdownOpen(false)}
                       className="flex items-center gap-2"
                     >

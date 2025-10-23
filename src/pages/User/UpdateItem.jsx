@@ -12,6 +12,7 @@ const UpdateItem = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
   const [categories] = useState([
     "Electronics",
     "Documents",
@@ -32,7 +33,7 @@ const UpdateItem = () => {
     thumbnail: "",
     contactName: "",
     contactEmail: "",
-    status: "active",
+    status: "not-recovered",
   });
 
   // Fetch item data to pre-fill form
@@ -45,13 +46,11 @@ const UpdateItem = () => {
 
         const token = await user.getIdToken();
         const response = await fetch(`http://localhost:5000/api/items/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
+          const errorData = await response.json().catch(() => ({}));
           throw new Error(errorData.message || "Failed to fetch item");
         }
 
@@ -62,11 +61,11 @@ const UpdateItem = () => {
           description: data.description,
           category: data.category,
           location: data.location,
-          date: data.date.split("T")[0], // Format date for input
+          date: data.date.split("T")[0],
           thumbnail: data.thumbnail,
           contactName: data.contactName,
           contactEmail: data.contactEmail,
-          status: data.status || "active",
+          status: data.status || "not-recovered",
         });
       } catch (err) {
         console.error("Fetch error:", err);
@@ -92,15 +91,15 @@ const UpdateItem = () => {
       const user = auth.currentUser;
       if (!user) throw new Error("Please sign in to update items");
 
-      // Prepare payload with proper date formatting
       const payload = {
         ...formData,
         date: new Date(formData.date).toISOString(),
+        status: formData.status || "not-recovered",
       };
 
       const token = await user.getIdToken();
       const response = await fetch(`http://localhost:5000/api/items/${id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -108,22 +107,22 @@ const UpdateItem = () => {
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json(); // Always parse JSON
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = { message: text };
+      }
 
       if (!response.ok) {
-        throw new Error(
-          data.message || `HTTP error! status: ${response.status}`
-        );
+        throw new Error(data.message || `HTTP error ${response.status}`);
       }
 
       toast.success(data.message || "Item updated successfully!");
       navigate("/my-items");
     } catch (err) {
-      console.error("Update failed:", {
-        error: err,
-        formData,
-        id,
-      });
+      console.error("Update failed:", { error: err, formData, id });
       toast.error(err.message || "Failed to update item");
     } finally {
       setSubmitting(false);
@@ -143,36 +142,27 @@ const UpdateItem = () => {
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Post Type */}
-          <div className="mb-4">
+          <div>
             <label className="block text-gray-700 mb-2">Item Type</label>
             <div className="flex space-x-4">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="postType"
-                  value="lost"
-                  checked={formData.postType === "lost"}
-                  onChange={handleChange}
-                  className="form-radio text-blue-600"
-                />
-                <span className="ml-2">Lost</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="postType"
-                  value="found"
-                  checked={formData.postType === "found"}
-                  onChange={handleChange}
-                  className="form-radio text-blue-600"
-                />
-                <span className="ml-2">Found</span>
-              </label>
+              {["lost", "found"].map((type) => (
+                <label key={type} className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="postType"
+                    value={type}
+                    checked={formData.postType === type}
+                    onChange={handleChange}
+                    className="form-radio text-blue-600"
+                  />
+                  <span className="ml-2 capitalize">{type}</span>
+                </label>
+              ))}
             </div>
           </div>
 
           {/* Status */}
-          <div className="mb-4">
+          <div>
             <label htmlFor="status" className="block text-gray-700 mb-2">
               Status
             </label>
@@ -181,11 +171,10 @@ const UpdateItem = () => {
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
             >
-              <option value="active">Active</option>
+              <option value="not-recovered">Not Recovered</option>
               <option value="recovered">Recovered</option>
-              <option value="closed">Closed</option>
             </select>
           </div>
         </div>
@@ -202,7 +191,7 @@ const UpdateItem = () => {
             value={formData.title}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
@@ -218,13 +207,13 @@ const UpdateItem = () => {
             onChange={handleChange}
             required
             rows="4"
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Category */}
-          <div className="mb-4">
+          <div>
             <label htmlFor="category" className="block text-gray-700 mb-2">
               Category*
             </label>
@@ -234,19 +223,17 @@ const UpdateItem = () => {
               value={formData.category}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select a category</option>
               {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
+                <option key={category}>{category}</option>
               ))}
             </select>
           </div>
 
           {/* Location */}
-          <div className="mb-4">
+          <div>
             <label htmlFor="location" className="block text-gray-700 mb-2">
               Location*
             </label>
@@ -257,14 +244,14 @@ const UpdateItem = () => {
               value={formData.location}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Date */}
-          <div className="mb-4">
+          <div>
             <label htmlFor="date" className="block text-gray-700 mb-2">
               Date*
             </label>
@@ -275,12 +262,12 @@ const UpdateItem = () => {
               value={formData.date}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* Thumbnail */}
-          <div className="mb-4">
+          <div>
             <label htmlFor="thumbnail" className="block text-gray-700 mb-2">
               Image URL
             </label>
@@ -290,15 +277,15 @@ const UpdateItem = () => {
               name="thumbnail"
               value={formData.thumbnail}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="https://example.com/image.jpg"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
 
         {/* Contact Info (read-only) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div className="mb-4">
+          <div>
             <label htmlFor="contactName" className="block text-gray-700 mb-2">
               Your Name
             </label>
@@ -311,7 +298,7 @@ const UpdateItem = () => {
               className="w-full px-3 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"
             />
           </div>
-          <div className="mb-4">
+          <div>
             <label htmlFor="contactEmail" className="block text-gray-700 mb-2">
               Your Email
             </label>
@@ -326,7 +313,6 @@ const UpdateItem = () => {
           </div>
         </div>
 
-        {/* Preview Image */}
         {formData.thumbnail && (
           <div className="mb-6">
             <label className="block text-gray-700 mb-2">Image Preview</label>
@@ -338,7 +324,6 @@ const UpdateItem = () => {
           </div>
         )}
 
-        {/* Buttons */}
         <div className="flex justify-end space-x-4">
           <button
             type="button"

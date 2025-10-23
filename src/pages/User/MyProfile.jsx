@@ -50,7 +50,7 @@ const MyProfile = () => {
 
         // Fetch user's items count
         const itemsResponse = await fetch(
-          "http://localhost:5000/api/debug/my-items",
+          "http://localhost:5000/api/my-items",
           {
             headers: {
               Authorization: `Bearer ${token}`,
