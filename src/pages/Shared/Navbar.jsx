@@ -1,9 +1,16 @@
-import React, { useContext, useState } from 'react';
-import { NavLink } from 'react-router';
-import { FaHome, FaSearch, FaPlus, FaUser, FaSignOutAlt, FaLock } from 'react-icons/fa';
-import { AuthContext } from '../../contexts/AuthContext/AuthContext';
-import Swal from 'sweetalert2';
-import logo from '../../assets/logo.svg';
+import React, { useContext, useState } from "react";
+import { NavLink } from "react-router";
+import {
+  FaHome,
+  FaSearch,
+  FaPlus,
+  FaUser,
+  FaSignOutAlt,
+  FaLock,
+} from "react-icons/fa";
+import { AuthContext } from "../../contexts/AuthContext/AuthContext";
+import Swal from "sweetalert2";
+import logo from "../../assets/logo.svg";
 
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
@@ -18,7 +25,7 @@ const Navbar = () => {
           icon: "success",
           title: "Logged out successfully",
           showConfirmButton: false,
-          timer: 1500
+          timer: 1500,
         });
       })
       .catch(console.error);
@@ -27,27 +34,43 @@ const Navbar = () => {
   const links = (
     <>
       <li>
-        <NavLink to='/' onClick={() => setDropdownOpen(false)} className="flex items-center gap-2">
+        <NavLink
+          to="/"
+          onClick={() => setDropdownOpen(false)}
+          className="flex items-center gap-2"
+        >
           <FaHome className="text-lg" />
           Home
         </NavLink>
       </li>
       <li>
-        <NavLink to='/lost-found-items' onClick={() => setDropdownOpen(false)} className="flex items-center gap-2">
+        <NavLink
+          to="/lost-found-items"
+          onClick={() => setDropdownOpen(false)}
+          className="flex items-center gap-2"
+        >
           <FaSearch className="text-lg" />
           Lost & Found Items
         </NavLink>
       </li>
-      {user?.role === 'admin' && (
+      {user?.role === "admin" && (
         <>
           <li>
-            <NavLink to="/admin/dashboard" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2">
+            <NavLink
+              to="/admin/dashboard"
+              onClick={() => setDropdownOpen(false)}
+              className="flex items-center gap-2"
+            >
               <FaLock className="text-lg" />
               Admin Dashboard
             </NavLink>
           </li>
           <li>
-            <NavLink to="/reported-items" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2">
+            <NavLink
+              to="/reported-items"
+              onClick={() => setDropdownOpen(false)}
+              className="flex items-center gap-2"
+            >
               <FaLock className="text-lg" />
               Reported Items
             </NavLink>
@@ -74,11 +97,18 @@ const Navbar = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h8m-8 6h16"
+              />
             </svg>
           </button>
           <ul
-            className={`menu menu-sm dropdown-content mt-3 p-2 shadow-lg bg-white rounded-box w-60 ${dropdownOpen ? 'block' : 'hidden'}`}
+            className={`menu menu-sm dropdown-content mt-3 p-2 shadow-lg bg-white rounded-box w-60 ${
+              dropdownOpen ? "block" : "hidden"
+            }`}
           >
             {links}
           </ul>
@@ -134,32 +164,47 @@ const Navbar = () => {
                   <li className="px-4 py-2 border-b border-gray-100">
                     <div className="font-medium text-gray-900 truncate">
                       {user.name || user.displayName || "User"}
-
                     </div>
                     <div className="text-sm text-gray-500 truncate">
                       {user.email}
                     </div>
                   </li>
                   <li>
-                    <NavLink to="/my-profile" onClick={() => setProfileDropdownOpen(false)} className="flex items-center gap-2">
+                    <NavLink
+                      to="/my-profile"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-2"
+                    >
                       <FaUser />
                       My Profile
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to="/add-items" onClick={() => setProfileDropdownOpen(false)} className="flex items-center gap-2">
+                    <NavLink
+                      to="/add-items"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-2"
+                    >
                       <FaPlus />
                       Add New Item
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to='/recovered-items' onClick={() => setProfileDropdownOpen(false)} className="flex items-center gap-2">
+                    <NavLink
+                      to="/recovered-items"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-2"
+                    >
                       <FaLock />
                       Recovered Items
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to="/my-items" onClick={() => setProfileDropdownOpen(false)} className="flex items-center gap-2">
+                    <NavLink
+                      to="/my-items"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-2"
+                    >
                       <FaLock />
                       Manage My Items
                     </NavLink>

@@ -10,6 +10,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../../firebase/firebase.config";
 import axios from "axios";
+import { updateProfile as fbUpdateProfile } from "firebase/auth";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -26,7 +27,7 @@ const AuthProvider = ({ children }) => {
 
       // Send to backend for verification and session creation
       const response = await axios.post(
-        "https://whereisit-server-inky.vercel.app/api/users/firebase-login",
+        "http://localhost:5000/api/users/firebase-login",
         { idToken, name: displayName },
         { withCredentials: true }
       );
@@ -45,20 +46,33 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // Common function to handle user registration
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  const updateUserProfile = (profile) => {
-    if (!auth.currentUser) return Promise.reject("No user logged in");
-    return auth.currentUser.updateProfile(profile);
+  // Common function to update user profile
+  const updateUserProfile = async (profile) => {
+    if (!auth.currentUser) throw new Error("No user logged in");
+
+    try {
+      await fbUpdateProfile(auth.currentUser, profile);
+    } catch (error) {
+      console.error("Profile update error:", error);
+      throw error;
+    }
   };
 
+  // Common function to handle user login
   const signInUser = async (email, password) => {
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const userData = await handleBackendAuth(userCredential.user);
       setUser(userData);
       return userData;
@@ -71,6 +85,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // Common function to handle Google sign-in
   const signInWithGoogle = async () => {
     setLoading(true);
     try {
@@ -87,12 +102,13 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // Common function to handle user logout
   const signOutUser = async () => {
     setLoading(true);
     try {
       await signOut(auth);
       await axios.post(
-        "https://whereisit-server-inky.vercel.app/api/users/logout",
+        "http://localhost:5000/api/users/logout",
         {},
         { withCredentials: true }
       );
@@ -105,6 +121,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // useEffect to sync auth state with backend
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
@@ -125,9 +142,11 @@ const AuthProvider = ({ children }) => {
     return () => unSubscribe();
   }, []);
 
+  // Auth context value
   const authInfo = {
     loading: loading || !authChecked,
     user,
+    setUser,
     createUser,
     signInUser,
     signInWithGoogle,
@@ -135,7 +154,9 @@ const AuthProvider = ({ children }) => {
     updateUserProfile,
   };
 
-  return <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;

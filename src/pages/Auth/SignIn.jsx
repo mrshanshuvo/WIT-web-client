@@ -1,12 +1,12 @@
 import React, { useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { toast } from "react-hot-toast";
+import { toast } from "react-hot-toast"; // or react-toastify if you prefer
 import { AuthContext } from "../../contexts/AuthContext/AuthContext";
 import SocialLogin from "../Shared/SocialLogin";
 
 const SignIn = () => {
   const [loading, setLoading] = useState(false);
-  const { signInUser } = useContext(AuthContext);
+  const { signInUser, setUser } = useContext(AuthContext); // make sure setUser is exposed
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -19,14 +19,14 @@ const SignIn = () => {
     const password = form.password.value;
 
     try {
-      await signInUser(email, password);
+      const userData = await signInUser(email, password);
+      setUser(userData); // ensure user context has the latest info
       toast.success("Login successful");
       navigate(from, { replace: true });
     } catch (error) {
       toast.error(error.message || "Login failed");
     } finally {
       setLoading(false);
-      form.reset();
     }
   };
 
@@ -35,7 +35,9 @@ const SignIn = () => {
       <h2 className="text-3xl text-center font-semibold mb-6">Sign In</h2>
       <form onSubmit={handleSignIn}>
         <div className="mb-4">
-          <label className="block mb-1" htmlFor="email">Email</label>
+          <label className="block mb-1" htmlFor="email">
+            Email
+          </label>
           <input
             type="email"
             name="email"
@@ -46,7 +48,9 @@ const SignIn = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-1" htmlFor="password">Password</label>
+          <label className="block mb-1" htmlFor="password">
+            Password
+          </label>
           <input
             type="password"
             name="password"
@@ -64,6 +68,7 @@ const SignIn = () => {
           {loading ? "Signing In..." : "Sign In"}
         </button>
       </form>
+
       <p className="mt-4 text-center">
         New to the site?{" "}
         <Link to="/register" className="text-primary font-semibold">
@@ -71,7 +76,7 @@ const SignIn = () => {
         </Link>
       </p>
 
-      <SocialLogin from={from}></SocialLogin>
+      <SocialLogin from={from} />
     </div>
   );
 };
