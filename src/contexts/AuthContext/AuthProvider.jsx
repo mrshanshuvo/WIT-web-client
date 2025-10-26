@@ -9,7 +9,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth } from "../../firebase/firebase.config";
-import axios from "axios";
+import { axiosInstance } from "../../api/api"; // <- use axiosInstance here
 import { updateProfile as fbUpdateProfile } from "firebase/auth";
 
 const googleProvider = new GoogleAuthProvider();
@@ -26,8 +26,8 @@ const AuthProvider = ({ children }) => {
       const displayName = firebaseUser.displayName || "";
 
       // Send to backend for verification and session creation
-      const response = await axios.post(
-        "http://localhost:5000/api/users/firebase-login",
+      const response = await axiosInstance.post(
+        "/users/firebase-login",
         { idToken, name: displayName },
         { withCredentials: true }
       );
@@ -37,7 +37,6 @@ const AuthProvider = ({ children }) => {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         name: displayName,
-        // Include any additional data from backend if needed
         ...(response.data.user || {}),
       };
     } catch (error) {
@@ -107,11 +106,7 @@ const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       await signOut(auth);
-      await axios.post(
-        "http://localhost:5000/api/users/logout",
-        {},
-        { withCredentials: true }
-      );
+      await axiosInstance.post("/users/logout", {}, { withCredentials: true });
       setUser(null);
     } catch (error) {
       console.error("Logout error:", error);

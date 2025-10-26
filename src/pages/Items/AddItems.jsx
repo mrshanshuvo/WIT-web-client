@@ -5,6 +5,18 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { auth } from "../../firebase/firebase.config";
+import { axiosInstance } from "../../api/api";
+import {
+  FaCamera,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaUser,
+  FaEnvelope,
+  FaTag,
+  FaArrowLeft,
+  FaUpload,
+  FaCheckCircle,
+} from "react-icons/fa";
 
 const AddItems = () => {
   const navigate = useNavigate();
@@ -25,12 +37,16 @@ const AddItems = () => {
     "Jewelry",
     "Clothing",
     "Pets",
+    "Bags & Wallets",
+    "Keys",
+    "Books",
+    "Toys",
     "Other",
   ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const [imageLoaded, setImageLoaded] = useState(false);
 
-  // Pre-fill user info when component mounts
   useEffect(() => {
     if (auth.currentUser) {
       setFormData((prev) => ({
@@ -47,17 +63,13 @@ const AddItems = () => {
       ...prev,
       [name]: value,
     }));
-    // Clear error when field is edited
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const handleDateChange = (date) => {
-    setFormData((prev) => ({
-      ...prev,
-      date,
-    }));
+    setFormData((prev) => ({ ...prev, date }));
   };
 
   const validateForm = () => {
@@ -76,45 +88,29 @@ const AddItems = () => {
     } else if (!/^\S+@\S+\.\S+$/.test(formData.contactEmail)) {
       newErrors.contactEmail = "Email is invalid";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/items", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
-        },
-        body: JSON.stringify({
-          ...formData,
-          date: formData.date.toISOString(),
-        }),
-      });
+      const token = await auth.currentUser.getIdToken();
+      await axiosInstance.post(
+        "/inventory",
+        { ...formData, date: formData.date.toISOString() },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-      if (!response.ok) throw new Error("Failed to submit item");
-
-      await response.json();
-
-      toast.success("Item posted successfully!", {
+      toast.success("🎉 Item posted successfully!", {
         position: "top-center",
         autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
       });
 
-      // Reset form after successful submission
       setFormData({
         postType: "lost",
         thumbnail: "",
@@ -127,267 +123,389 @@ const AddItems = () => {
         contactEmail: auth.currentUser?.email || "",
       });
 
-      // Redirect after a delay
       setTimeout(() => navigate("/lost-found-items"), 2000);
     } catch (error) {
-      toast.error(`Error: ${error.message}`, {
+      toast.error(`❌ Error: ${error.message}`, {
         position: "top-center",
         autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
+  const handleImageError = (e) => {
+    setImageLoaded(false);
+    e.target.src =
+      "https://via.placeholder.com/400x300?text=Image+Not+Available";
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white shadow rounded-lg p-6 sm:p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            Report Lost or Found Item
-          </h2>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 mb-4"
+          >
+            <FaArrowLeft className="text-sm" />
+            <span>Back</span>
+          </button>
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Report {formData.postType === "lost" ? "Lost" : "Found"} Item
+          </h1>
+          <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
+            Help reunite items with their owners by providing detailed
+            information
+          </p>
+        </div>
 
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {/* Post Type */}
-              <div>
-                <label
-                  htmlFor="postType"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Post Type <span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="postType"
-                  name="postType"
-                  value={formData.postType}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="lost">Lost</option>
-                  <option value="found">Found</option>
-                </select>
-              </div>
-
-              {/* Category */}
-              <div>
-                <label
-                  htmlFor="category"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Category <span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">Select a category</option>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-                {errors.category && (
-                  <p className="mt-1 text-sm text-red-600">{errors.category}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Title */}
-            <div className="mt-6">
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Title <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Brief description of the item"
-              />
-              {errors.title && (
-                <p className="mt-1 text-sm text-red-600">{errors.title}</p>
-              )}
-            </div>
-
-            {/* Description */}
-            <div className="mt-6">
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Description <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                rows={4}
-                value={formData.description}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Detailed description of the item (color, brand, distinguishing features, etc.)"
-              />
-              {errors.description && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.description}
-                </p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 gap-6 mt-6 sm:grid-cols-2">
-              {/* Location */}
-              <div>
-                <label
-                  htmlFor="location"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Location <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Where was it lost/found?"
-                />
-                {errors.location && (
-                  <p className="mt-1 text-sm text-red-600">{errors.location}</p>
-                )}
-              </div>
-
-              {/* Date */}
-              <div>
-                <label
-                  htmlFor="date"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Date <span className="text-red-500">*</span>
-                </label>
-                <DatePicker
-                  selected={formData.date}
-                  onChange={handleDateChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  maxDate={new Date()}
-                  showYearDropdown
-                  dropdownMode="select"
-                />
-              </div>
-            </div>
-
-            {/* Thumbnail */}
-            <div className="mt-6">
-              <label
-                htmlFor="thumbnail"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Image URL <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="url"
-                id="thumbnail"
-                name="thumbnail"
-                value={formData.thumbnail}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="https://example.com/image.jpg"
-              />
-              {errors.thumbnail && (
-                <p className="mt-1 text-sm text-red-600">{errors.thumbnail}</p>
-              )}
-              {formData.thumbnail && (
-                <div className="mt-2">
-                  <img
-                    src={formData.thumbnail}
-                    alt="Preview"
-                    className="h-32 object-contain border rounded"
-                    onError={(e) => {
-                      e.target.src =
-                        "https://via.placeholder.com/150?text=Image+Not+Available";
-                    }}
-                  />
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+          <div className="p-6 sm:p-8 lg:p-10">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Post Type and Category Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Post Type */}
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaTag className="text-blue-500" />
+                      Post Type <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, postType: "lost" }))
+                      }
+                      className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                        formData.postType === "lost"
+                          ? "border-red-500 bg-red-50 text-red-700 shadow-md"
+                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="text-lg font-semibold">Lost Item</div>
+                        <div className="text-sm opacity-75">
+                          I lost something
+                        </div>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, postType: "found" }))
+                      }
+                      className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                        formData.postType === "found"
+                          ? "border-green-500 bg-green-50 text-green-700 shadow-md"
+                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="text-lg font-semibold">Found Item</div>
+                        <div className="text-sm opacity-75">
+                          I found something
+                        </div>
+                      </div>
+                    </button>
+                  </div>
                 </div>
-              )}
-            </div>
 
-            {/* Contact Information */}
-            <div className="grid grid-cols-1 gap-6 mt-6 sm:grid-cols-2">
-              <div>
-                <label
-                  htmlFor="contactName"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Your Name <span className="text-red-500">*</span>
+                {/* Category */}
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaTag className="text-blue-500" />
+                      Category <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                      errors.category
+                        ? "border-red-300"
+                        : "border-gray-200 focus:border-blue-500"
+                    }`}
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.category && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                      <FaCheckCircle className="text-xs" />
+                      {errors.category}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Title */}
+              <div className="form-group">
+                <label className="label">
+                  <span className="label-text font-semibold text-gray-700">
+                    Item Title <span className="text-red-500">*</span>
+                  </span>
                 </label>
                 <input
                   type="text"
-                  id="contactName"
-                  name="contactName"
-                  value={formData.contactName}
+                  name="title"
+                  value={formData.title}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                    errors.title
+                      ? "border-red-300"
+                      : "border-gray-200 focus:border-blue-500"
+                  }`}
+                  placeholder="Brief description of the item (e.g., 'Black iPhone 13 Pro')"
                 />
-                {errors.contactName && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.contactName}
+                {errors.title && (
+                  <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                    <FaCheckCircle className="text-xs" />
+                    {errors.title}
                   </p>
                 )}
               </div>
 
-              <div>
-                <label
-                  htmlFor="contactEmail"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Your Email <span className="text-red-500">*</span>
+              {/* Description */}
+              <div className="form-group">
+                <label className="label">
+                  <span className="label-text font-semibold text-gray-700">
+                    Description <span className="text-red-500">*</span>
+                  </span>
                 </label>
-                <input
-                  type="email"
-                  id="contactEmail"
-                  name="contactEmail"
-                  value={formData.contactEmail}
+                <textarea
+                  name="description"
+                  rows={4}
+                  value={formData.description}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                    errors.description
+                      ? "border-red-300"
+                      : "border-gray-200 focus:border-blue-500"
+                  }`}
+                  placeholder="Detailed description of the item (color, brand, distinguishing features, contents, etc.)"
                 />
-                {errors.contactEmail && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.contactEmail}
+                {errors.description && (
+                  <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                    <FaCheckCircle className="text-xs" />
+                    {errors.description}
                   </p>
                 )}
               </div>
-            </div>
 
-            <div className="mt-8 flex justify-end">
-              <button
-                type="button"
-                onClick={() => navigate(-1)}
-                className="mr-4 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? "Submitting..." : "Add Post"}
-              </button>
-            </div>
-          </form>
+              {/* Location and Date Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Location */}
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaMapMarkerAlt className="text-blue-500" />
+                      Location <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                      errors.location
+                        ? "border-red-300"
+                        : "border-gray-200 focus:border-blue-500"
+                    }`}
+                    placeholder="Where was it lost/found? (e.g., 'Central Park, Main Street')"
+                  />
+                  {errors.location && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                      <FaCheckCircle className="text-xs" />
+                      {errors.location}
+                    </p>
+                  )}
+                </div>
+
+                {/* Date */}
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaCalendarAlt className="text-blue-500" />
+                      Date <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <div className="relative">
+                    <DatePicker
+                      selected={formData.date}
+                      onChange={handleDateChange}
+                      className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                        errors.date
+                          ? "border-red-300"
+                          : "border-gray-200 focus:border-blue-500"
+                      }`}
+                      maxDate={new Date()}
+                      showYearDropdown
+                      dropdownMode="select"
+                      dateFormat="MMMM d, yyyy"
+                    />
+                    <FaCalendarAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Image URL and Preview */}
+              <div className="form-group">
+                <label className="label">
+                  <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                    <FaCamera className="text-blue-500" />
+                    Image URL <span className="text-red-500">*</span>
+                  </span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="url"
+                    name="thumbnail"
+                    value={formData.thumbnail}
+                    onChange={handleChange}
+                    className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                      errors.thumbnail
+                        ? "border-red-300"
+                        : "border-gray-200 focus:border-blue-500"
+                    }`}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                  <FaUpload className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+                </div>
+                {errors.thumbnail && (
+                  <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                    <FaCheckCircle className="text-xs" />
+                    {errors.thumbnail}
+                  </p>
+                )}
+
+                {/* Image Preview */}
+                {formData.thumbnail && (
+                  <div className="mt-4">
+                    <p className="text-sm font-medium text-gray-700 mb-2">
+                      Image Preview:
+                    </p>
+                    <div className="relative border-2 border-dashed border-gray-300 rounded-2xl overflow-hidden bg-gray-50">
+                      <img
+                        src={formData.thumbnail}
+                        alt="Preview"
+                        className="w-full h-48 sm:h-64 object-contain"
+                        onLoad={handleImageLoad}
+                        onError={handleImageError}
+                      />
+                      {!imageLoaded && formData.thumbnail && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="loading loading-spinner text-blue-500"></div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Contact Information */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaUser className="text-blue-500" />
+                      Your Name <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="contactName"
+                      value={formData.contactName}
+                      onChange={handleChange}
+                      className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                        errors.contactName
+                          ? "border-red-300"
+                          : "border-gray-200 focus:border-blue-500"
+                      }`}
+                    />
+                    <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+                  </div>
+                  {errors.contactName && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                      <FaCheckCircle className="text-xs" />
+                      {errors.contactName}
+                    </p>
+                  )}
+                </div>
+
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaEnvelope className="text-blue-500" />
+                      Your Email <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      name="contactEmail"
+                      value={formData.contactEmail}
+                      onChange={handleChange}
+                      className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                        errors.contactEmail
+                          ? "border-red-300"
+                          : "border-gray-200 focus:border-blue-500"
+                      }`}
+                    />
+                    <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+                  </div>
+                  {errors.contactEmail && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                      <FaCheckCircle className="text-xs" />
+                      {errors.contactEmail}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-end pt-6 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  className="px-6 py-3 border-2 border-gray-300 rounded-xl text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 hover:scale-105"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-8 py-3 border border-transparent rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center gap-2">
+                      <span className="loading loading-spinner loading-sm"></span>
+                      Submitting...
+                    </span>
+                  ) : (
+                    `Post ${
+                      formData.postType === "lost" ? "Lost" : "Found"
+                    } Item`
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

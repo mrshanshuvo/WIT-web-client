@@ -13,38 +13,26 @@ import MyItems from "../pages/User/MyItems";
 import UpdateItem from "../pages/User/UpdateItem";
 import MyRecoveredItems from "../pages/User/MyRecoveredItems";
 import RecoveredItems from "../pages/RecoveredItems/RecoveredItems";
+import Blog from "../pages/Blog/Blog";
+import Contact from "../pages/Contact/Contact";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    Component: RootLayout,
+    element: <RootLayout />,
     errorElement: <NotFound />,
     children: [
-      { index: true, Component: Home },
-      { path: "register", Component: Register },
-      { path: "sign-in", Component: SignIn },
+      // 🏠 Public routes
+      { index: true, element: <Home /> },
+      { path: "register", element: <Register /> },
+      { path: "sign-in", element: <SignIn /> },
+      { path: "lost-found-items", element: <LostFoundItems /> },
+      { path: "inventory/:id", element: <ItemDetails /> },
+      { path: "recovered-items", element: <RecoveredItems /> },
+      { path: "blog", element: <Blog /> },
+      { path: "contact", element: <Contact /> },
 
-      // Public item routes
-      {
-        path: "lost-found-items",
-        Component: LostFoundItems,
-        loader: () =>
-          fetch(
-            `${import.meta.env.VITE_API_URL}/items?type=lost&status=active`
-          ),
-      },
-      {
-        path: "items/:id",
-        Component: ItemDetails,
-        loader: ({ params }) =>
-          fetch(`${import.meta.env.VITE_API_URL}/items/${params.id}`),
-      },
-      {
-        path: "recovered-items",
-        Component: RecoveredItems,
-      },
-
-      // User protected routes
+      // 🔐 Protected (user) routes
       {
         path: "add-item",
         element: (
@@ -78,7 +66,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "updateItems/:id",
+        path: "update-item/:id",
         element: (
           <PrivateRoute>
             <UpdateItem />

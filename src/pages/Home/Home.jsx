@@ -4,12 +4,16 @@ import BannerSlider from "./BannerSlider";
 import LatestItemsSection from "./LatestItemsSection";
 import StatsSection from "./StatsSection";
 import HowItWorks from "./HowItWorks";
+import FAQSection from "./FAQSection";
+import RatingReviews from "./RatingReviews";
 import { motion } from "framer-motion";
+import Testimonials from "./Testimonials";
 
 const Home = () => {
   return (
     <div className="max-w-7xl mx-auto">
-      <BannerSlider></BannerSlider>
+      <BannerSlider />
+
       <Suspense
         fallback={
           <div className="flex justify-center items-center h-40">
@@ -17,9 +21,10 @@ const Home = () => {
           </div>
         }
       >
-        <LatestItemsSection></LatestItemsSection>
+        <LatestItemsSection />
       </Suspense>
-      {/* Stats Section - Extra Section 1 */}
+
+      {/* Stats Section */}
       <motion.section
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -30,7 +35,7 @@ const Home = () => {
         <StatsSection />
       </motion.section>
 
-      {/* How It Works Section - Extra Section 2 */}
+      {/* How It Works Section */}
       <motion.section
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -39,6 +44,39 @@ const Home = () => {
         className="my-12"
       >
         <HowItWorks />
+      </motion.section>
+
+      {/* Testimonials Section */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4 }}
+        className="my-12"
+      >
+        <Testimonials />
+      </motion.section>
+
+      {/* FAQs Section */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.5 }}
+        className="my-12"
+      >
+        <FAQSection />
+      </motion.section>
+
+      {/* Rating & Reviews Section */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.6 }}
+        className="my-12"
+      >
+        <RatingReviews />
       </motion.section>
     </div>
   );

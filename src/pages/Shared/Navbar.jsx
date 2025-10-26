@@ -8,6 +8,7 @@ import {
   FaSignOutAlt,
   FaLock,
   FaCheckCircle,
+  FaBox,
 } from "react-icons/fa";
 import { AuthContext } from "../../contexts/AuthContext/AuthContext";
 import Swal from "sweetalert2";
@@ -91,29 +92,36 @@ const Navbar = () => {
           <FaCheckCircle className="text-lg" /> Recovered Items
         </NavLink>
       </li>
-
-      {user?.role === "admin" && (
-        <>
-          <li>
-            <NavLink
-              to="/admin/dashboard"
-              onClick={() => setDropdownOpen(false)}
-              className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-100"
-            >
-              <FaLock className="text-lg" /> Admin Dashboard
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/reported-items"
-              onClick={() => setDropdownOpen(false)}
-              className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-100"
-            >
-              <FaLock className="text-lg" /> Reported Items
-            </NavLink>
-          </li>
-        </>
-      )}
+      <li>
+        <NavLink
+          to="/blog"
+          onClick={() => setDropdownOpen(false)}
+          className={({ isActive }) =>
+            `flex items-center gap-2 px-2 py-1 rounded-md transition-colors ${
+              isActive
+                ? "text-blue-600 font-bold bg-blue-50"
+                : "hover:bg-gray-100"
+            }`
+          }
+        >
+          <FaBox className="text-lg" /> Blog
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/contact"
+          onClick={() => setDropdownOpen(false)}
+          className={({ isActive }) =>
+            `flex items-center gap-2 px-2 py-1 rounded-md transition-colors ${
+              isActive
+                ? "text-blue-600 font-bold bg-blue-50"
+                : "hover:bg-gray-100"
+            }`
+          }
+        >
+          <FaUser className="text-lg" /> Contact
+        </NavLink>
+      </li>
     </>
   );
 

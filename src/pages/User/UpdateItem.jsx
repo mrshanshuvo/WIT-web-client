@@ -1,25 +1,43 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { auth } from "../../firebase/firebase.config";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorMessage from "../../components/ErrorMessage";
+import { axiosInstance } from "../../api/api";
+import {
+  FaArrowLeft,
+  FaSave,
+  FaTimes,
+  FaImage,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaTag,
+  FaUser,
+  FaEnvelope,
+  FaEdit,
+  FaCheckCircle,
+  FaExclamationTriangle,
+} from "react-icons/fa";
 
 const UpdateItem = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
+  const [submitting, setSubmitting] = useState(false);
   const [categories] = useState([
     "Electronics",
     "Documents",
     "Jewelry",
     "Clothing",
     "Accessories",
-    "Bags",
+    "Bags & Wallets",
+    "Keys",
+    "Books",
+    "Toys",
     "Other",
   ]);
 
@@ -36,311 +54,416 @@ const UpdateItem = () => {
     status: "not-recovered",
   });
 
-  // Fetch item data to pre-fill form
-  useEffect(() => {
-    const fetchItem = async () => {
-      try {
-        setLoading(true);
-        const user = auth.currentUser;
-        if (!user) throw new Error("Please sign in to edit items");
+  const [imageLoaded, setImageLoaded] = useState(false);
 
-        const token = await user.getIdToken();
-        const response = await fetch(`http://localhost:5000/api/items/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+  // Fetch item using TanStack Query
+  const { isLoading, isError, error } = useQuery({
+    queryKey: ["item", id],
+    queryFn: async () => {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Please sign in to edit items");
+      const token = await user.getIdToken();
 
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.message || "Failed to fetch item");
-        }
+      const res = await axiosInstance.get(`/inventory/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return res.data;
+    },
+    onSuccess: (data) => {
+      setFormData({
+        postType: data.postType,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        location: data.location,
+        date: data.date.split("T")[0],
+        thumbnail: data.thumbnail,
+        contactName: data.contactName,
+        contactEmail: data.contactEmail,
+        status: data.status || "not-recovered",
+      });
+    },
+    staleTime: 1000 * 60 * 5,
+  });
 
-        const data = await response.json();
-        setFormData({
-          postType: data.postType,
-          title: data.title,
-          description: data.description,
-          category: data.category,
-          location: data.location,
-          date: data.date.split("T")[0],
-          thumbnail: data.thumbnail,
-          contactName: data.contactName,
-          contactEmail: data.contactEmail,
-          status: data.status || "not-recovered",
-        });
-      } catch (err) {
-        console.error("Fetch error:", err);
-        setError(err.message);
-        toast.error(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const mutation = useMutation({
+    mutationFn: async (payload) => {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Please sign in to update items");
+      const token = await user.getIdToken();
 
-    fetchItem();
-  }, [id]);
+      const res = await axiosInstance.patch(`/inventory/${id}`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("🎉 Item updated successfully!");
+      queryClient.invalidateQueries(["item", id]);
+      queryClient.invalidateQueries(["my-items"]);
+      navigate("/my-items");
+    },
+    onError: (err) => {
+      console.error("Update failed:", err);
+      toast.error(`❌ ${err.message || "Failed to update item"}`);
+    },
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      setSubmitting(true);
-      const user = auth.currentUser;
-      if (!user) throw new Error("Please sign in to update items");
-
-      const payload = {
-        ...formData,
-        date: new Date(formData.date).toISOString(),
-        status: formData.status || "not-recovered",
-      };
-
-      const token = await user.getIdToken();
-      const response = await fetch(`http://localhost:5000/api/items/${id}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const text = await response.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch {
-        data = { message: text };
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP error ${response.status}`);
-      }
-
-      toast.success(data.message || "Item updated successfully!");
-      navigate("/my-items");
-    } catch (err) {
-      console.error("Update failed:", { error: err, formData, id });
-      toast.error(err.message || "Failed to update item");
-    } finally {
-      setSubmitting(false);
-    }
+    const payload = {
+      ...formData,
+      date: new Date(formData.date).toISOString(),
+      status: formData.status || "not-recovered",
+    };
+    setSubmitting(true);
+    mutation.mutate(payload, {
+      onSettled: () => setSubmitting(false),
+    });
   };
 
-  if (loading) return <LoadingSpinner className="mt-8" />;
-  if (error) return <ErrorMessage message={error} className="mt-8" />;
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
+  const handleImageError = (e) => {
+    setImageLoaded(false);
+    e.target.src =
+      "https://via.placeholder.com/400x300?text=Image+Not+Available";
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <LoadingSpinner className="mt-8" />
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <ErrorMessage message={error.message} className="mt-8" />
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Update Item</h1>
-
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-lg p-6"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          {/* Post Type */}
-          <div>
-            <label className="block text-gray-700 mb-2">Item Type</label>
-            <div className="flex space-x-4">
-              {["lost", "found"].map((type) => (
-                <label key={type} className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    name="postType"
-                    value={type}
-                    checked={formData.postType === type}
-                    onChange={handleChange}
-                    className="form-radio text-blue-600"
-                  />
-                  <span className="ml-2 capitalize">{type}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Status */}
-          <div>
-            <label htmlFor="status" className="block text-gray-700 mb-2">
-              Status
-            </label>
-            <select
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="not-recovered">Not Recovered</option>
-              <option value="recovered">Recovered</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Title */}
-        <div className="mb-4">
-          <label htmlFor="title" className="block text-gray-700 mb-2">
-            Title*
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {/* Description */}
-        <div className="mb-4">
-          <label htmlFor="description" className="block text-gray-700 mb-2">
-            Description*
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-            rows="4"
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          {/* Category */}
-          <div>
-            <label htmlFor="category" className="block text-gray-700 mb-2">
-              Category*
-            </label>
-            <select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option key={category}>{category}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Location */}
-          <div>
-            <label htmlFor="location" className="block text-gray-700 mb-2">
-              Location*
-            </label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          {/* Date */}
-          <div>
-            <label htmlFor="date" className="block text-gray-700 mb-2">
-              Date*
-            </label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          {/* Thumbnail */}
-          <div>
-            <label htmlFor="thumbnail" className="block text-gray-700 mb-2">
-              Image URL
-            </label>
-            <input
-              type="url"
-              id="thumbnail"
-              name="thumbnail"
-              value={formData.thumbnail}
-              onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-
-        {/* Contact Info (read-only) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label htmlFor="contactName" className="block text-gray-700 mb-2">
-              Your Name
-            </label>
-            <input
-              type="text"
-              id="contactName"
-              name="contactName"
-              value={formData.contactName}
-              readOnly
-              className="w-full px-3 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"
-            />
-          </div>
-          <div>
-            <label htmlFor="contactEmail" className="block text-gray-700 mb-2">
-              Your Email
-            </label>
-            <input
-              type="email"
-              id="contactEmail"
-              name="contactEmail"
-              value={formData.contactEmail}
-              readOnly
-              className="w-full px-3 py-2 border rounded-lg bg-gray-100 cursor-not-allowed"
-            />
-          </div>
-        </div>
-
-        {formData.thumbnail && (
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-2">Image Preview</label>
-            <img
-              src={formData.thumbnail}
-              alt="Preview"
-              className="max-w-full h-48 object-contain border rounded-lg"
-            />
-          </div>
-        )}
-
-        <div className="flex justify-end space-x-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
           <button
-            type="button"
             onClick={() => navigate(-1)}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 mb-4"
           >
-            Cancel
+            <FaArrowLeft className="text-sm" />
+            <span>Back to My Items</span>
           </button>
-          <button
-            type="submit"
-            disabled={submitting}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {submitting ? "Updating..." : "Update Item"}
-          </button>
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+            Update Item
+          </h1>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Modify your item details to help others find or identify it better
+          </p>
         </div>
-      </form>
+
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+          <div className="p-6 sm:p-8 lg:p-10">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Post Type and Status Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Post Type */}
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaTag className="text-blue-500" />
+                      Item Type <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, postType: "lost" }))
+                      }
+                      className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                        formData.postType === "lost"
+                          ? "border-red-500 bg-red-50 text-red-700 shadow-md"
+                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                      }`}
+                    >
+                      <div className="text-center">
+                        <FaExclamationTriangle className="text-lg mx-auto mb-2" />
+                        <div className="text-sm font-semibold">Lost Item</div>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, postType: "found" }))
+                      }
+                      className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                        formData.postType === "found"
+                          ? "border-green-500 bg-green-50 text-green-700 shadow-md"
+                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                      }`}
+                    >
+                      <div className="text-center">
+                        <FaCheckCircle className="text-lg mx-auto mb-2" />
+                        <div className="text-sm font-semibold">Found Item</div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Status */}
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaCheckCircle className="text-blue-500" />
+                      Status <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  >
+                    <option value="not-recovered">Not Recovered</option>
+                    <option value="recovered">Recovered</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Title */}
+              <div className="form-group">
+                <label className="label">
+                  <span className="label-text font-semibold text-gray-700">
+                    Item Title <span className="text-red-500">*</span>
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  placeholder="Brief description of the item"
+                />
+              </div>
+
+              {/* Description */}
+              <div className="form-group">
+                <label className="label">
+                  <span className="label-text font-semibold text-gray-700">
+                    Description <span className="text-red-500">*</span>
+                  </span>
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  required
+                  rows="4"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  placeholder="Detailed description of the item (color, brand, distinguishing features, etc.)"
+                />
+              </div>
+
+              {/* Category and Location Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Category */}
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaTag className="text-blue-500" />
+                      Category <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Location */}
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaMapMarkerAlt className="text-blue-500" />
+                      Location <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                    placeholder="Where was it lost/found?"
+                  />
+                </div>
+              </div>
+
+              {/* Date and Image URL Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Date */}
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaCalendarAlt className="text-blue-500" />
+                      Date <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  />
+                </div>
+
+                {/* Thumbnail */}
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaImage className="text-blue-500" />
+                      Image URL
+                    </span>
+                  </label>
+                  <input
+                    type="url"
+                    name="thumbnail"
+                    value={formData.thumbnail}
+                    onChange={handleChange}
+                    placeholder="https://example.com/image.jpg"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Image Preview */}
+              {formData.thumbnail && (
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700">
+                      Image Preview
+                    </span>
+                  </label>
+                  <div className="relative border-2 border-dashed border-gray-300 rounded-2xl overflow-hidden bg-gray-50">
+                    <img
+                      src={formData.thumbnail}
+                      alt="Preview"
+                      className="w-full h-64 object-contain"
+                      onLoad={handleImageLoad}
+                      onError={handleImageError}
+                    />
+                    {!imageLoaded && formData.thumbnail && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="loading loading-spinner text-blue-500"></div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Contact Info (read-only) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaUser className="text-blue-500" />
+                      Your Name
+                    </span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="contactName"
+                      value={formData.contactName}
+                      readOnly
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-100 cursor-not-allowed"
+                    />
+                    <FaEdit className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label className="label">
+                    <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                      <FaEnvelope className="text-blue-500" />
+                      Your Email
+                    </span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      name="contactEmail"
+                      value={formData.contactEmail}
+                      readOnly
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-100 cursor-not-allowed"
+                    />
+                    <FaEdit className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-end pt-6 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  className="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-xl text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 hover:scale-105"
+                >
+                  <FaTimes className="text-lg" />
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="flex items-center gap-2 px-8 py-3 border border-transparent rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                  {submitting ? (
+                    <span className="flex items-center gap-2">
+                      <span className="loading loading-spinner loading-sm"></span>
+                      Updating...
+                    </span>
+                  ) : (
+                    <>
+                      <FaSave className="text-lg" />
+                      Update Item
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

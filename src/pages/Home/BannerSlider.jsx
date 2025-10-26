@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade, Navigation } from "swiper/modules";
 import { motion } from "framer-motion";
@@ -11,7 +11,9 @@ import "swiper/css/navigation";
 import { axiosInstance } from "../../api/api";
 
 const BannerSlider = () => {
-  // Fetch slides dynamically
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
+
   const {
     data: slides = [],
     isLoading,
@@ -20,10 +22,10 @@ const BannerSlider = () => {
   } = useQuery({
     queryKey: ["slides"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/slides");
+      const res = await axiosInstance.get("/highlights");
       return res.data;
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes cache
+    staleTime: 1000 * 60 * 5,
   });
 
   if (isLoading)
@@ -48,19 +50,22 @@ const BannerSlider = () => {
       <Swiper
         modules={[Autoplay, Pagination, EffectFade, Navigation]}
         slidesPerView={1}
-        loop
+        loop={true}
         effect="fade"
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
-        speed={500}
+        speed={600}
+        autoplay={{ delay: 4000, disableOnInteraction: false }}
         pagination={{ clickable: true }}
-        navigation
+        navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
+        onBeforeInit={(swiper) => {
+          swiper.params.navigation.prevEl = prevRef.current;
+          swiper.params.navigation.nextEl = nextRef.current;
+        }}
         className="h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px]"
       >
         {slides.map(
           ({ title, description, bgImage, actionText, actionLink }, idx) => (
             <SwiperSlide key={idx}>
               <div className="relative w-full h-full flex items-center justify-center">
-                {/* Background Image */}
                 <img
                   src={bgImage}
                   alt={title}
@@ -68,9 +73,7 @@ const BannerSlider = () => {
                   loading="lazy"
                   draggable={false}
                 />
-                {/* Overlay */}
                 <div className="absolute inset-0 bg-black/25 backdrop-blur-[2px]" />
-                {/* Content */}
                 <div className="relative z-10 px-4 sm:px-6 md:px-10 max-w-3xl text-center text-white">
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -100,6 +103,20 @@ const BannerSlider = () => {
             </SwiperSlide>
           )
         )}
+
+        {/* Navigation buttons */}
+        <div
+          ref={prevRef}
+          className="absolute top-1/2 left-4 -translate-y-1/2 z-20 w-10 h-10 bg-white/70 rounded-full flex items-center justify-center cursor-pointer hover:bg-white transition"
+        >
+          <span className="text-black text-xl font-bold">&#10094;</span>
+        </div>
+        <div
+          ref={nextRef}
+          className="absolute top-1/2 right-4 -translate-y-1/2 z-20 w-10 h-10 bg-white/70 rounded-full flex items-center justify-center cursor-pointer hover:bg-white transition"
+        >
+          <span className="text-black text-xl font-bold">&#10095;</span>
+        </div>
       </Swiper>
     </section>
   );
