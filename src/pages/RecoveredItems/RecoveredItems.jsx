@@ -8,20 +8,15 @@ import {
   FaMapMarkerAlt,
   FaCalendarAlt,
   FaTag,
-  FaBox,
   FaCheckCircle,
   FaEye,
   FaExclamationTriangle,
-  FaHistory,
   FaHome,
   FaSyncAlt,
   FaTimes,
   FaCaretDown,
   FaCaretUp,
-  FaChartLine,
   FaTrophy,
-  FaUsers,
-  FaStar,
 } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../api/api";

@@ -7,9 +7,8 @@ import {
   FaComment,
   FaArrowRight,
   FaTag,
-  FaShare,
-  FaBookOpen,
   FaSearch,
+  FaBookOpen,
 } from "react-icons/fa";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
@@ -19,45 +18,44 @@ const Blog = () => {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [sortBy, setSortBy] = useState("newest");
-  const [imageErrors, setImageErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Initialize with data
   useEffect(() => {
-    setPosts(blogPostsData);
-    setFilteredPosts(blogPostsData);
+    if (blogPostsData && Array.isArray(blogPostsData)) {
+      setPosts(blogPostsData);
+      setFilteredPosts(blogPostsData);
+    }
+    setIsLoading(false);
   }, []);
-
-  // Get unique categories
-  const categories = ["all", ...new Set(posts.map((post) => post.category))];
 
   // Filter and sort posts
   useEffect(() => {
-    let result = posts.filter((post) => {
-      const matchesSearch =
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.author.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory =
-        selectedCategory === "all" || post.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    });
+    if (posts.length === 0) return;
 
-    // Sort posts
-    result.sort((a, b) => {
-      switch (sortBy) {
-        case "newest":
-          return new Date(b.date) - new Date(a.date);
-        case "oldest":
-          return new Date(a.date) - new Date(b.date);
-        case "popular":
-          return b.likes + b.comments - (a.likes + a.comments);
-        default:
-          return 0;
-      }
-    });
+    let result = [...posts];
+
+    // Apply search filter
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(
+        (post) =>
+          post.title.toLowerCase().includes(term) ||
+          post.excerpt.toLowerCase().includes(term) ||
+          post.author.toLowerCase().includes(term)
+      );
+    }
+
+    // Apply category filter
+    if (selectedCategory !== "all") {
+      result = result.filter((post) => post.category === selectedCategory);
+    }
+
+    // Sort by date (newest first by default)
+    result.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     setFilteredPosts(result);
-  }, [posts, searchTerm, selectedCategory, sortBy]);
+  }, [posts, searchTerm, selectedCategory]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -67,38 +65,10 @@ const Blog = () => {
     });
   };
 
-  // Generate fallback SVG image
-  const generateFallbackImage = (title, category) => {
-    const colors = {
-      Safety: "3b82f6",
-      Recovery: "10b981",
-      Insights: "8b5cf6",
-      Technology: "f59e0b",
-      default: "6b7280",
-    };
+  // Get unique categories
+  const categories = ["all", ...new Set(posts.map((post) => post.category))];
 
-    const color = colors[category] || colors.default;
-    const shortTitle =
-      title.length > 30 ? title.substring(0, 30) + "..." : title;
-
-    return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
-      <defs>
-        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:%23${color};stop-opacity:1" />
-          <stop offset="100%" style="stop-color:%23${color}99;stop-opacity:1" />
-        </linearGradient>
-      </defs>
-      <rect width="400" height="300" fill="url(%23grad)"/>
-      <rect x="20" y="20" width="360" height="260" fill="none" stroke="white" stroke-width="2" stroke-dasharray="8,4"/>
-      <text x="50%" y="45%" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="bold">${shortTitle}</text>
-      <text x="50%" y="60%" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" opacity="0.8">${category}</text>
-    </svg>`;
-  };
-
-  const handleImageError = (postId) => {
-    setImageErrors((prev) => ({ ...prev, [postId]: true }));
-  };
-
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -120,173 +90,203 @@ const Blog = () => {
     },
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading blog posts...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12 sm:mb-16"
+          className="text-center mb-12"
         >
-          <div className="flex justify-center mb-6">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-500 p-4 rounded-2xl shadow-lg">
-              <FaBookOpen className="text-white text-3xl" />
-            </div>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-2xl mb-6">
+            <FaBookOpen className="text-white text-2xl" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             WhereIsIt Blog
           </h1>
-          <p className="text-gray-600 text-lg sm:text-xl max-w-3xl mx-auto">
-            Discover helpful tips, success stories, and community updates about
-            lost and found items.
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            Helpful tips, success stories, and community updates about lost and
+            found items.
           </p>
         </motion.div>
 
-        {/* Search and Filters */}
+        {/* Search and Filter Bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-6 mb-8"
+          className="bg-white rounded-2xl shadow-lg p-6 mb-8"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            {/* Search */}
-            <div className="relative">
-              <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
-              <input
-                type="text"
-                placeholder="Search blog posts..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
-              />
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search Input */}
+            <div className="flex-1">
+              <div className="relative">
+                <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search blog posts..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                />
+              </div>
             </div>
 
             {/* Category Filter */}
-            <div className="relative">
-              <FaTag className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm appearance-none"
-              >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category === "all" ? "All Categories" : category}
-                  </option>
-                ))}
-              </select>
+            <div className="w-full md:w-64">
+              <div className="relative">
+                <FaTag className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none appearance-none bg-white"
+                >
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category === "all" ? "All Categories" : category}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
+          </div>
 
-            {/* Sort By */}
-            <div className="relative">
-              <FaCalendarAlt className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm appearance-none"
-              >
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="popular">Most Popular</option>
-              </select>
-            </div>
+          {/* Active Filters Info */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {selectedCategory !== "all" && (
+              <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                <FaTag className="text-xs" />
+                {selectedCategory}
+                <button
+                  onClick={() => setSelectedCategory("all")}
+                  className="ml-1 hover:text-blue-900"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            {searchTerm && (
+              <span className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 text-gray-800 text-sm font-medium rounded-full">
+                <FaSearch className="text-xs" />"{searchTerm}"
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="ml-1 hover:text-gray-900"
+                >
+                  ×
+                </button>
+              </span>
+            )}
           </div>
         </motion.div>
 
-        {/* Results Count */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex justify-between items-center mb-6"
-        >
+        {/* Results Info */}
+        <div className="flex justify-between items-center mb-8">
           <p className="text-gray-600">
             Showing {filteredPosts.length} of {posts.length} posts
           </p>
-          <div className="flex gap-2 text-sm">
-            <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full font-medium">
-              {posts.filter((post) => post.category === "Safety").length} Safety
-            </span>
-            <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full font-medium">
-              {posts.filter((post) => post.category === "Recovery").length}{" "}
-              Recovery
-            </span>
-            <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full font-medium">
-              {posts.filter((post) => post.category === "Insights").length}{" "}
-              Insights
-            </span>
-            <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full font-medium">
-              {posts.filter((post) => post.category === "Technology").length}{" "}
-              Technology
-            </span>
+          <div className="flex gap-2">
+            {categories
+              .filter((cat) => cat !== "all")
+              .map((category) => (
+                <span
+                  key={category}
+                  className={`px-3 py-1 text-sm font-medium rounded-full ${
+                    selectedCategory === category
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  } cursor-pointer transition`}
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  {category}
+                </span>
+              ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Blog Posts Grid */}
         {filteredPosts.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-12 text-center"
+            className="bg-white rounded-2xl shadow-lg p-12 text-center"
           >
-            <FaSearch className="text-gray-400 text-6xl mx-auto mb-6" />
+            <FaSearch className="text-gray-300 text-5xl mx-auto mb-6" />
             <h3 className="text-2xl font-bold text-gray-800 mb-4">
               No Posts Found
             </h3>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              We couldn't find any blog posts matching your criteria. Try
-              adjusting your search or filters.
+              {searchTerm || selectedCategory !== "all"
+                ? "Try adjusting your search or filters"
+                : "No blog posts available yet"}
             </p>
-            <button
-              onClick={() => {
-                setSearchTerm("");
-                setSelectedCategory("all");
-                setSortBy("newest");
-              }}
-              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 hover:scale-105 font-semibold"
-            >
-              Reset Filters
-            </button>
+            {(searchTerm || selectedCategory !== "all") && (
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedCategory("all");
+                }}
+                className="px-6 py-3 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 transition"
+              >
+                Reset Filters
+              </button>
+            )}
           </motion.div>
         ) : (
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {filteredPosts.map((post) => (
               <motion.article
                 key={post.id}
                 variants={itemVariants}
-                className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-105 group"
+                whileHover={{ scale: 1.02 }}
+                className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
               >
                 {/* Image */}
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={
-                      imageErrors[post.id]
-                        ? generateFallbackImage(post.title, post.category)
-                        : post.image
-                    }
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    onError={() => handleImageError(post.id)}
-                  />
+                <div className="h-48 bg-gradient-to-r from-blue-100 to-purple-100 relative overflow-hidden">
+                  {post.image ? (
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                        e.target.parentElement.className =
+                          "h-48 bg-gradient-to-r from-blue-100 to-purple-100 flex items-center justify-center";
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <FaBookOpen className="text-gray-400 text-4xl" />
+                    </div>
+                  )}
+                  {/* Category Badge */}
                   <div className="absolute top-4 left-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${
                         post.category === "Safety"
-                          ? "bg-blue-100 text-blue-800 border border-blue-200"
+                          ? "bg-blue-500 text-white"
                           : post.category === "Recovery"
-                          ? "bg-green-100 text-green-800 border border-green-200"
+                          ? "bg-green-500 text-white"
                           : post.category === "Insights"
-                          ? "bg-purple-100 text-purple-800 border border-purple-200"
-                          : "bg-yellow-100 text-yellow-800 border border-yellow-200"
+                          ? "bg-purple-500 text-white"
+                          : "bg-yellow-500 text-white"
                       }`}
                     >
                       {post.category}
@@ -309,7 +309,7 @@ const Blog = () => {
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
+                  <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors cursor-pointer">
                     {post.title}
                   </h2>
 
@@ -331,9 +331,9 @@ const Blog = () => {
                       </div>
                     </div>
 
-                    <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold text-sm transition-colors duration-200 group/read">
+                    <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors">
                       <span>Read More</span>
-                      <FaArrowRight className="group-hover/read:translate-x-1 transition-transform duration-200" />
+                      <FaArrowRight className="text-xs" />
                     </button>
                   </div>
                 </div>
@@ -342,28 +342,31 @@ const Blog = () => {
           </motion.div>
         )}
 
-        {/* Newsletter Signup */}
+        {/* Newsletter Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl p-8 text-center text-white"
+          className="mt-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center text-white"
         >
-          <h3 className="text-2xl font-bold mb-4">Stay Updated</h3>
-          <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-            Get the latest blog posts and community updates delivered directly
-            to your inbox.
+          <h3 className="text-2xl font-bold mb-3">Stay Updated</h3>
+          <p className="text-blue-100 mb-6 max-w-xl mx-auto">
+            Get the latest blog posts and community updates delivered to your
+            inbox.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
             <input
               type="email"
               placeholder="Enter your email"
-              className="flex-1 px-4 py-3 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-white"
+              className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
             />
-            <button className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-xl hover:bg-gray-100 transition-all duration-200 hover:scale-105">
+            <button className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition">
               Subscribe
             </button>
           </div>
+          <p className="text-sm text-blue-200 mt-4">
+            No spam. Unsubscribe at any time.
+          </p>
         </motion.div>
       </div>
     </div>
