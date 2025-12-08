@@ -1,190 +1,254 @@
 import React from "react";
-import {
-  FaFacebookF,
-  FaTwitter,
-  FaLinkedinIn,
-  FaInstagram,
-  FaMapMarkerAlt,
-  FaPhoneAlt,
-  FaEnvelope,
-} from "react-icons/fa";
 import logo from "../../assets/logo.svg";
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="bg-gray-800 text-gray-300 py-12 sm:py-16 px-4 sm:px-6 md:px-8">
-      <div className="max-w-5xl mx-auto">
-        {/* Top Section */}
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-12 lg:gap-0">
-          {/* Brand & Contact */}
-          <aside className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-4 lg:w-1/4">
-            <div className="flex items-center gap-2">
-              <img
-                src={logo}
-                alt="WhereIsIt Logo"
-                className="w-10 h-10 object-contain"
-              />
-              <span className="text-2xl font-bold text-white">
-                Where<span className="text-blue-400">Is</span>It
-              </span>
+    <footer className="bg-gradient-to-br from-gray-900 to-black text-gray-300 pt-16 pb-8 px-4 sm:px-6 md:px-8 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-10 left-1/4 w-64 h-64 bg-emerald-500 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 right-1/4 w-80 h-80 bg-teal-500 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          {/* Brand Column */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-3 group">
+              <div className="relative">
+                <img
+                  src={logo}
+                  alt="WhereIsIt Logo"
+                  className="w-14 h-14 object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full opacity-10 group-hover:opacity-20 transition-opacity duration-300"></div>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                  WhereIsIt
+                </span>
+                <span className="text-xs text-gray-400 font-medium tracking-wide">
+                  Reuniting Lost Items
+                </span>
+              </div>
             </div>
-            <p className="text-sm leading-relaxed">
-              Reuniting people with their lost belongings since 2023
+
+            <p className="text-gray-400 leading-relaxed text-sm">
+              Connecting people with their lost belongings through community,
+              technology, and trust since 2023.
             </p>
-            <div className="space-y-2 text-sm mt-4">
-              <div className="flex items-center gap-2">
-                <FaMapMarkerAlt className="text-blue-400" />
-                <span>123 Finder St, Lost City, LC 12345</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaPhoneAlt className="text-blue-400" />
-                <span>(123) 456-7890</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaEnvelope className="text-blue-400" />
-                <span>help@whereisit.app</span>
-              </div>
-            </div>
-          </aside>
 
-          {/* Navigation Links */}
-          <nav className="flex flex-col sm:flex-row justify-between flex-grow gap-8 sm:gap-12 lg:gap-16 text-sm text-gray-300">
-            <div className="text-center sm:text-left">
-              <h6 className="font-semibold text-white mb-4">Quick Links</h6>
-              <ul className="space-y-2">
-                <li>
-                  <a href="/" className="hover:text-blue-400 transition">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/lost-items"
-                    className="hover:text-blue-400 transition"
-                  >
-                    Lost Items
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/found-items"
-                    className="hover:text-blue-400 transition"
-                  >
-                    Found Items
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/report-item"
-                    className="hover:text-blue-400 transition"
-                  >
-                    Report Item
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-900/30 to-teal-900/30 flex items-center justify-center">
+                  <span className="text-emerald-400 text-lg">📍</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-300">Our Location</p>
+                  <p className="text-sm text-gray-400">
+                    123 Finder St, Lost City, LC 12345
+                  </p>
+                </div>
+              </div>
 
-            <div className="text-center sm:text-left">
-              <h6 className="font-semibold text-white mb-4">Support</h6>
-              <ul className="space-y-2">
-                <li>
-                  <a href="/faq" className="hover:text-blue-400 transition">
-                    FAQ
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/safety-tips"
-                    className="hover:text-blue-400 transition"
-                  >
-                    Safety Tips
-                  </a>
-                </li>
-                <li>
-                  <a href="/contact" className="hover:text-blue-400 transition">
-                    Contact Us
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/feedback"
-                    className="hover:text-blue-400 transition"
-                  >
-                    Feedback
-                  </a>
-                </li>
-              </ul>
-            </div>
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-900/30 to-teal-900/30 flex items-center justify-center">
+                  <span className="text-emerald-400 text-lg">📧</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-300">Email Us</p>
+                  <p className="text-sm text-gray-400">help@whereisit.app</p>
+                </div>
+              </div>
 
-            <div className="text-center sm:text-left">
-              <h6 className="font-semibold text-white mb-4">Legal</h6>
-              <ul className="space-y-2">
-                <li>
-                  <a href="/terms" className="hover:text-blue-400 transition">
-                    Terms of Service
-                  </a>
-                </li>
-                <li>
-                  <a href="/privacy" className="hover:text-blue-400 transition">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/cookie-policy"
-                    className="hover:text-blue-400 transition"
-                  >
-                    Cookie Policy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/community-guidelines"
-                    className="hover:text-blue-400 transition"
-                  >
-                    Community Guidelines
-                  </a>
-                </li>
-              </ul>
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-900/30 to-teal-900/30 flex items-center justify-center">
+                  <span className="text-emerald-400 text-lg">📞</span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-300">Call Us</p>
+                  <p className="text-sm text-gray-400">(123) 456-7890</p>
+                </div>
+              </div>
             </div>
-          </nav>
+          </div>
+
+          {/* Quick Links Column */}
+          <div>
+            <h3 className="text-xl font-bold text-white mb-6 pb-3 border-b border-emerald-900/30 inline-block">
+              Quick Links
+            </h3>
+            <ul className="space-y-4">
+              {[
+                { text: "Home", href: "/" },
+                { text: "Lost Items", href: "/lost-items" },
+                { text: "Found Items", href: "/found-items" },
+                { text: "Report Item", href: "/report-item" },
+                { text: "Recovered Items", href: "/recovered-items" },
+                { text: "Blog", href: "/blog" },
+              ].map((link) => (
+                <li key={link.text}>
+                  <a
+                    href={link.href}
+                    className="group flex items-center text-gray-400 hover:text-emerald-300 transition-all duration-300"
+                  >
+                    <span className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    <span className="group-hover:translate-x-2 transition-transform">
+                      {link.text}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Support Column */}
+          <div>
+            <h3 className="text-xl font-bold text-white mb-6 pb-3 border-b border-emerald-900/30 inline-block">
+              Support
+            </h3>
+            <ul className="space-y-4">
+              {[
+                { text: "FAQ", href: "/faq" },
+                { text: "Safety Tips", href: "/safety-tips" },
+                { text: "Contact Us", href: "/contact" },
+                { text: "Feedback", href: "/feedback" },
+                { text: "How It Works", href: "/how-it-works" },
+                { text: "Community Forum", href: "/forum" },
+              ].map((link) => (
+                <li key={link.text}>
+                  <a
+                    href={link.href}
+                    className="group flex items-center text-gray-400 hover:text-emerald-300 transition-all duration-300"
+                  >
+                    <span className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    <span className="group-hover:translate-x-2 transition-transform">
+                      {link.text}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal Column */}
+          <div>
+            <h3 className="text-xl font-bold text-white mb-6 pb-3 border-b border-emerald-900/30 inline-block">
+              Legal
+            </h3>
+            <ul className="space-y-4">
+              {[
+                { text: "Terms of Service", href: "/terms" },
+                { text: "Privacy Policy", href: "/privacy" },
+                { text: "Cookie Policy", href: "/cookie-policy" },
+                { text: "Community Guidelines", href: "/community-guidelines" },
+                { text: "Data Protection", href: "/data-protection" },
+                { text: "Report Abuse", href: "/report-abuse" },
+              ].map((link) => (
+                <li key={link.text}>
+                  <a
+                    href={link.href}
+                    className="group flex items-center text-gray-400 hover:text-emerald-300 transition-all duration-300"
+                  >
+                    <span className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    <span className="group-hover:translate-x-2 transition-transform">
+                      {link.text}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        {/* Social Media */}
-        <div className="mt-12 flex justify-center md:justify-end space-x-4 sm:space-x-6">
-          <a
-            href="#"
-            aria-label="Facebook"
-            className="text-gray-400 hover:text-blue-400 transition"
-          >
-            <FaFacebookF size={22} />
-          </a>
-          <a
-            href="#"
-            aria-label="Twitter"
-            className="text-gray-400 hover:text-blue-300 transition"
-          >
-            <FaTwitter size={22} />
-          </a>
-          <a
-            href="#"
-            aria-label="LinkedIn"
-            className="text-gray-400 hover:text-blue-500 transition"
-          >
-            <FaLinkedinIn size={22} />
-          </a>
-          <a
-            href="#"
-            aria-label="Instagram"
-            className="text-gray-400 hover:text-pink-400 transition"
-          >
-            <FaInstagram size={22} />
-          </a>
+        {/* Divider */}
+        <div className="border-t border-emerald-900/30 my-12"></div>
+
+        {/* Bottom Section */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+          {/* Social Media */}
+          <div className="flex items-center gap-6">
+            <div className="text-gray-400 font-medium">Connect with us:</div>
+            <div className="flex gap-4">
+              {[
+                { icon: "📘", label: "Facebook", color: "hover:text-blue-500" },
+                { icon: "🐦", label: "Twitter", color: "hover:text-blue-400" },
+                { icon: "💼", label: "LinkedIn", color: "hover:text-blue-600" },
+                {
+                  icon: "📸",
+                  label: "Instagram",
+                  color: "hover:text-pink-500",
+                },
+              ].map((social) => (
+                <a
+                  key={social.label}
+                  href="#"
+                  aria-label={social.label}
+                  className={`w-12 h-12 rounded-xl bg-gray-800/50 border border-emerald-900/30 flex items-center justify-center text-xl transition-all duration-300 hover:scale-110 hover:bg-gray-800/80 hover:border-emerald-900/50 ${social.color}`}
+                >
+                  {social.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Newsletter */}
+          <div className="w-full md:w-auto">
+            <div className="bg-gradient-to-r from-gray-800/50 to-emerald-900/20 rounded-2xl p-6 border border-emerald-900/30">
+              <p className="font-bold text-white mb-3">Stay Updated</p>
+              <p className="text-sm text-gray-400 mb-4">
+                Subscribe to our newsletter for updates
+              </p>
+              <form className="flex gap-2">
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  className="flex-1 px-4 py-3 bg-gray-900/50 border border-emerald-900/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 transition-all"
+                />
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300"
+                >
+                  Subscribe
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
 
         {/* Copyright */}
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <p>© {new Date().getFullYear()} WhereIsIt. All rights reserved.</p>
+        <div className="mt-12 pt-8 border-t border-emerald-900/30">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center">
+            <p className="text-gray-500 text-sm">
+              © {currentYear} WhereIsIt. All rights reserved.
+            </p>
+            <p className="text-gray-500 text-sm">
+              Designed with ❤️ for reuniting lost items worldwide
+            </p>
+            <div className="flex items-center gap-6 text-sm">
+              <a
+                href="/sitemap"
+                className="text-gray-500 hover:text-emerald-300 transition"
+              >
+                Sitemap
+              </a>
+              <a
+                href="/accessibility"
+                className="text-gray-500 hover:text-emerald-300 transition"
+              >
+                Accessibility
+              </a>
+              <a
+                href="/status"
+                className="text-gray-500 hover:text-emerald-300 transition"
+              >
+                System Status
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

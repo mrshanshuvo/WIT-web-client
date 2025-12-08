@@ -6,6 +6,7 @@ import StatsSection from "./StatsSection";
 import HowItWorks from "./HowItWorks";
 import FAQSection from "./FAQSection";
 import RatingReviews from "./RatingReviews";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import Testimonials from "./Testimonials";
 
@@ -30,7 +31,6 @@ const Home = () => {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.3 }}
-        className="my-12"
       >
         <StatsSection />
       </motion.section>
@@ -41,7 +41,6 @@ const Home = () => {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.4 }}
-        className="my-12"
       >
         <HowItWorks />
       </motion.section>
@@ -52,7 +51,6 @@ const Home = () => {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.4 }}
-        className="my-12"
       >
         <Testimonials />
       </motion.section>
@@ -63,7 +61,6 @@ const Home = () => {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.5 }}
-        className="my-12"
       >
         <FAQSection />
       </motion.section>
@@ -74,7 +71,6 @@ const Home = () => {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.6 }}
-        className="my-12"
       >
         <RatingReviews />
       </motion.section>
