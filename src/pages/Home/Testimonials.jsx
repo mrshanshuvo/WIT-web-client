@@ -16,6 +16,7 @@ import {
   FaRing,
   FaFileAlt,
   FaUsers,
+  FaAward,
 } from "react-icons/fa";
 
 const testimonials = [
@@ -267,6 +268,29 @@ const Testimonials = () => {
                 Cities Covered
               </div>
             </div>
+          </div>
+        </motion.div>
+
+        {/* Rating Summary - Make it visually distinct */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-8 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-3xl p-10 text-white overflow-hidden"
+        >
+          <div className="text-center">
+            <div className="inline-flex items-center gap-3 px-6 py-2 bg-white/20 rounded-full mb-4 backdrop-blur-sm">
+              <FaAward className="text-white" />
+              <span className="font-bold">Overall Rating</span>
+            </div>
+            <div className="text-5xl font-black mb-2">
+              4.9<span className="text-2xl text-white/80">/5</span>
+            </div>
+            <div className="flex justify-center mb-2">
+              {renderStars(5, "text-2xl")}
+            </div>
+            <div className="text-white/90">Based on 2,847 verified reviews</div>
           </div>
         </motion.div>
 

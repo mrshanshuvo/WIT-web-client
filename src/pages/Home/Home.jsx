@@ -1,20 +1,35 @@
 import React, { Suspense } from "react";
 import { ClipLoader } from "react-spinners";
 import BannerSlider from "./BannerSlider";
-import LatestItemsSection from "./LatestItemsSection";
-import StatsSection from "./StatsSection";
-import HowItWorks from "./HowItWorks";
-import FAQSection from "./FAQSection";
-import RatingReviews from "./RatingReviews";
+
+// Lazy load sections
+const LatestItemsSection = React.lazy(() => import("./LatestItemsSection"));
+const HowItWorks = React.lazy(() => import("./HowItWorks"));
+const FAQSection = React.lazy(() => import("./FAQSection"));
+const Testimonials = React.lazy(() => import("./Testimonials"));
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import Testimonials from "./Testimonials";
+
+// Reusable motion section
+const MotionSection = ({ children, delay = 0.3 }) => (
+  <motion.section
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay, duration: 0.6 }}
+    className="my-10"
+  >
+    {children}
+  </motion.section>
+);
 
 const Home = () => {
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="container mx-auto px-4">
+      {/* Hero / Banner */}
       <BannerSlider />
 
+      {/* Latest Items */}
       <Suspense
         fallback={
           <div className="flex justify-center items-center h-40">
@@ -25,55 +40,44 @@ const Home = () => {
         <LatestItemsSection />
       </Suspense>
 
-      {/* Stats Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.3 }}
+      {/* How It Works */}
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center h-32">
+            <ClipLoader size={35} color="#3B82F6" />
+          </div>
+        }
       >
-        <StatsSection />
-      </motion.section>
+        <MotionSection delay={0.4}>
+          <HowItWorks />
+        </MotionSection>
+      </Suspense>
 
-      {/* How It Works Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
+      {/* Testimonials */}
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center h-32">
+            <ClipLoader size={35} color="#3B82F6" />
+          </div>
+        }
       >
-        <HowItWorks />
-      </motion.section>
+        <MotionSection delay={0.45}>
+          <Testimonials />
+        </MotionSection>
+      </Suspense>
 
-      {/* Testimonials Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
+      {/* FAQ */}
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center h-32">
+            <ClipLoader size={35} color="#3B82F6" />
+          </div>
+        }
       >
-        <Testimonials />
-      </motion.section>
-
-      {/* FAQs Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.5 }}
-      >
-        <FAQSection />
-      </motion.section>
-
-      {/* Rating & Reviews Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.6 }}
-      >
-        <RatingReviews />
-      </motion.section>
+        <MotionSection delay={0.5}>
+          <FAQSection />
+        </MotionSection>
+      </Suspense>
     </div>
   );
 };
