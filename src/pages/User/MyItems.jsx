@@ -113,20 +113,23 @@ const MyItems = () => {
 
     if (isRecovered) {
       return {
-        color: "bg-green-100 text-green-800 border-green-200",
+        color:
+          "bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 border-emerald-200",
         icon: FaCheckCircle,
         text: "Fully Recovered",
       };
     }
     if (isPending) {
       return {
-        color: "bg-yellow-100 text-yellow-800 border-yellow-200",
+        color:
+          "bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-800 border-yellow-200",
         icon: FaClock,
         text: "Pending Confirmation",
       };
     }
     return {
-      color: "bg-gray-100 text-gray-800 border-gray-200",
+      color:
+        "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 border-gray-200",
       icon: FaBox,
       text: "Not Recovered",
     };
@@ -135,15 +138,20 @@ const MyItems = () => {
   const getPostTypeConfig = (postType) => {
     return postType === "found"
       ? {
-          color: "bg-green-100 text-green-800 border-green-200",
+          color:
+            "bg-gradient-to-r from-teal-100 to-emerald-100 text-teal-800 border-teal-200",
           icon: FaSearch,
         }
-      : { color: "bg-red-100 text-red-800 border-red-200", icon: FaBox };
+      : {
+          color:
+            "bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 border-emerald-200",
+          icon: FaBox,
+        };
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <LoadingSpinner className="mt-8" />
         </div>
@@ -153,7 +161,7 @@ const MyItems = () => {
 
   if (isError) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <ErrorMessage message={error.message} className="mt-8" />
         </div>
@@ -164,11 +172,11 @@ const MyItems = () => {
   const { items } = data;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent mb-4">
             My Posted Items
           </h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
@@ -179,15 +187,15 @@ const MyItems = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20 shadow-lg">
-            <div className="bg-blue-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 text-center border border-emerald-100 shadow-lg">
+            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
               <FaBox className="text-white text-lg" />
             </div>
             <h3 className="text-2xl font-bold text-gray-800">{items.length}</h3>
             <p className="text-gray-600 text-sm">Total Items</p>
           </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20 shadow-lg">
-            <div className="bg-green-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 text-center border border-emerald-100 shadow-lg">
+            <div className="bg-gradient-to-r from-emerald-600 to-teal-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
               <FaCheckCircle className="text-white text-lg" />
             </div>
             <h3 className="text-2xl font-bold text-gray-800">
@@ -201,8 +209,8 @@ const MyItems = () => {
             </h3>
             <p className="text-gray-600 text-sm">Recovered</p>
           </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20 shadow-lg">
-            <div className="bg-yellow-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 text-center border border-emerald-100 shadow-lg">
+            <div className="bg-gradient-to-r from-yellow-500 to-orange-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
               <FaClock className="text-white text-lg" />
             </div>
             <h3 className="text-2xl font-bold text-gray-800">
@@ -215,8 +223,8 @@ const MyItems = () => {
             </h3>
             <p className="text-gray-600 text-sm">Pending</p>
           </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20 shadow-lg">
-            <div className="bg-purple-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 text-center border border-emerald-100 shadow-lg">
+            <div className="bg-gradient-to-r from-teal-500 to-emerald-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
               <FaSearch className="text-white text-lg" />
             </div>
             <h3 className="text-2xl font-bold text-gray-800">
@@ -229,14 +237,14 @@ const MyItems = () => {
         {/* Action Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
           <div className="flex items-center gap-2 text-gray-600">
-            <FaBox className="text-blue-500" />
+            <FaBox className="text-emerald-600" />
             <span className="font-medium">
               {items.length} item{items.length !== 1 ? "s" : ""} posted
             </span>
           </div>
           <button
             onClick={() => navigate("/add-item")}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl font-semibold"
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl font-semibold"
           >
             <FiPlus className="text-lg" />
             Add New Item
@@ -245,8 +253,10 @@ const MyItems = () => {
 
         {/* Items Grid */}
         {items.length === 0 ? (
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-12 text-center">
-            <FaBox className="text-gray-400 text-6xl mx-auto mb-6" />
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 p-12 text-center">
+            <div className="bg-gradient-to-r from-emerald-100 to-teal-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FaBox className="text-emerald-600 text-4xl" />
+            </div>
             <h3 className="text-2xl font-bold text-gray-800 mb-4">
               No Items Posted Yet
             </h3>
@@ -256,7 +266,7 @@ const MyItems = () => {
             </p>
             <button
               onClick={() => navigate("/add-item")}
-              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 hover:scale-105 font-semibold"
+              className="px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl font-semibold"
             >
               Post Your First Item
             </button>
@@ -273,10 +283,10 @@ const MyItems = () => {
               return (
                 <div
                   key={item._id}
-                  className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                  className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-105"
                 >
                   {/* Item Image */}
-                  <div className="relative h-48 bg-gray-100 overflow-hidden">
+                  <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
                     {item.thumbnail ? (
                       <img
                         src={item.thumbnail}
@@ -288,20 +298,20 @@ const MyItems = () => {
                         }}
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                        <FaBox className="text-gray-400 text-4xl" />
+                      <div className="w-full h-full bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center">
+                        <FaBox className="text-emerald-400 text-4xl" />
                       </div>
                     )}
                     {/* Status Badge */}
                     <div className="absolute top-4 left-4 flex flex-col gap-2">
                       <div
-                        className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border ${statusConfig.color}`}
+                        className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold border shadow-sm ${statusConfig.color}`}
                       >
                         <StatusIcon className="text-xs" />
                         <span>{statusConfig.text}</span>
                       </div>
                       <div
-                        className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border ${postTypeConfig.color}`}
+                        className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold border shadow-sm ${postTypeConfig.color}`}
                       >
                         <PostTypeIcon className="text-xs" />
                         <span className="capitalize">{item.postType}</span>
@@ -320,19 +330,21 @@ const MyItems = () => {
 
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <FaBox className="text-gray-400" />
+                        <FaBox className="text-emerald-500" />
                         <span className="font-medium">Category:</span>
-                        <span>{item.category}</span>
+                        <span className="text-gray-700">{item.category}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <FiMapPin className="text-gray-400" />
+                        <FiMapPin className="text-emerald-500" />
                         <span className="font-medium">Location:</span>
-                        <span className="line-clamp-1">{item.location}</span>
+                        <span className="text-gray-700 line-clamp-1">
+                          {item.location}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <FaClock className="text-gray-400" />
+                        <FaClock className="text-emerald-500" />
                         <span className="font-medium">Posted:</span>
-                        <span>
+                        <span className="text-gray-700">
                           {new Date(
                             item.createdAt || item.date
                           ).toLocaleDateString()}
@@ -342,35 +354,35 @@ const MyItems = () => {
 
                     {/* Recovery Information */}
                     {recovery && recovery.recoveredBy && (
-                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
-                        <h4 className="font-semibold text-blue-800 text-sm mb-3 flex items-center gap-2">
-                          <FaUser className="text-blue-600" />
+                      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4 mb-4">
+                        <h4 className="font-semibold text-emerald-800 text-sm mb-3 flex items-center gap-2">
+                          <FaUser className="text-emerald-600" />
                           Finder Information
                         </h4>
                         <div className="flex items-center gap-3 mb-3">
                           <img
                             src={recovery.recoveredBy.photoURL}
                             alt={recovery.recoveredBy.name}
-                            className="w-10 h-10 rounded-full object-cover border-2 border-blue-200"
+                            className="w-10 h-10 rounded-full object-cover border-2 border-emerald-200"
                           />
                           <div className="flex-1">
                             <p className="font-medium text-gray-800 text-sm">
                               {recovery.recoveredBy.name}
                             </p>
-                            <p className="text-gray-600 text-xs">
+                            <p className="text-emerald-700 text-xs">
                               {recovery.recoveredBy.email}
                             </p>
                           </div>
                         </div>
                         {recovery.recoveredLocation && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                            <FiMapPin className="text-blue-500" />
+                          <div className="flex items-center gap-2 text-sm text-emerald-700 mb-2">
+                            <FiMapPin className="text-emerald-600" />
                             <span>{recovery.recoveredLocation}</span>
                           </div>
                         )}
                         {recovery.notes && (
                           <div className="flex items-start gap-2 text-sm text-gray-600 mb-3">
-                            <FiMessageSquare className="text-blue-500 mt-0.5 flex-shrink-0" />
+                            <FiMessageSquare className="text-emerald-600 mt-0.5 flex-shrink-0" />
                             <span className="line-clamp-2">
                               {recovery.notes}
                             </span>
@@ -380,7 +392,7 @@ const MyItems = () => {
                           href={`https://mail.google.com/mail/?view=cm&to=${recovery.recoveredBy.email}&su=Regarding your found item: ${item.title}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-semibold transition-colors duration-200"
+                          className="flex items-center gap-2 text-emerald-700 hover:text-emerald-800 text-sm font-semibold transition-colors duration-200"
                         >
                           <FiMail className="text-sm" />
                           Contact Finder
@@ -393,14 +405,14 @@ const MyItems = () => {
                       <div className="flex gap-2">
                         <button
                           onClick={() => navigate(`/inventory/${item._id}`)}
-                          className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-blue-600 transition-colors duration-200 text-sm"
+                          className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-emerald-600 transition-colors duration-200 text-sm hover:bg-emerald-50 rounded-lg"
                         >
                           <FiEye className="text-sm" />
                           View
                         </button>
                         <button
                           onClick={() => navigate(`/update-item/${item._id}`)}
-                          className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-green-600 transition-colors duration-200 text-sm"
+                          className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-emerald-700 transition-colors duration-200 text-sm hover:bg-emerald-50 rounded-lg"
                         >
                           <FiEdit className="text-sm" />
                           Edit
@@ -415,7 +427,7 @@ const MyItems = () => {
                               onClick={() =>
                                 markRecoveredMutation.mutate(recovery._id)
                               }
-                              className="flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 text-sm font-semibold"
+                              className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all duration-200 text-sm font-semibold shadow-sm hover:shadow"
                               disabled={markRecoveredMutation.isLoading}
                             >
                               {markRecoveredMutation.isLoading ? (
@@ -430,7 +442,7 @@ const MyItems = () => {
                           )}
                         <button
                           onClick={() => deleteMutation.mutate(item._id)}
-                          className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-red-600 transition-colors duration-200 text-sm"
+                          className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors duration-200 text-sm rounded-lg"
                           disabled={deleteMutation.isLoading}
                         >
                           {deleteMutation.isLoading ? (

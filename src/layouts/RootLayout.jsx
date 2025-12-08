@@ -1,8 +1,8 @@
 import React from "react";
 import { Outlet } from "react-router";
-import Navbar from "../pages/Shared/Navbar";
-import Footer from "../pages/Shared/Footer";
 import ScrollToTop from "../components/ScrollToTop";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const RootLayout = () => {
   return (

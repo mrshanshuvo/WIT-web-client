@@ -1,8 +1,8 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router";
-import { AuthContext } from "../../contexts/AuthContext/AuthContext";
+import { AuthContext } from "../contexts/AuthContext/AuthContext";
 import Swal from "sweetalert2";
-import logo from "../../assets/logo.svg";
+import logo from "../assets/logo.svg";
 
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
@@ -67,6 +67,23 @@ const Navbar = () => {
           Lost & Found
         </NavLink>
       </li>
+      {user && (
+        <li>
+          <NavLink
+            to="/add-item"
+            onClick={() => setDropdownOpen(false)}
+            className={({ isActive }) =>
+              `px-5 py-2.5 rounded-full font-medium transition-all duration-300 ${
+                isActive
+                  ? "text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-lg transform scale-105"
+                  : "text-gray-700 hover:bg-emerald-50 hover:text-emerald-700"
+              }`
+            }
+          >
+            Add Item
+          </NavLink>
+        </li>
+      )}
       <li>
         <NavLink
           to="/recovered-items"
@@ -230,15 +247,7 @@ const Navbar = () => {
                       My Profile
                     </NavLink>
                   </li>
-                  <li>
-                    <NavLink
-                      to="/add-item"
-                      onClick={() => setProfileDropdownOpen(false)}
-                      className="block px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 hover:text-emerald-700 transition-all font-medium border border-transparent hover:border-emerald-100"
-                    >
-                      Add New Item
-                    </NavLink>
-                  </li>
+
                   <li>
                     <NavLink
                       to="/my-recovered-items"

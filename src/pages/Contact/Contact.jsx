@@ -53,31 +53,31 @@ const Contact = () => {
       icon: FaEnvelope,
       label: "Email",
       value: support?.email,
-      color: "text-red-500",
-      bgColor: "bg-red-50",
+      color: "text-emerald-600",
+      bgColor: "bg-emerald-50",
       link: `mailto:${support?.email}`,
     },
     {
       icon: FaPhone,
       label: "Phone",
       value: support?.phone,
-      color: "text-green-500",
-      bgColor: "bg-green-50",
+      color: "text-teal-600",
+      bgColor: "bg-teal-50",
       link: `tel:${support?.phone}`,
     },
     {
       icon: FaMapMarkerAlt,
       label: "Address",
       value: support?.address,
-      color: "text-blue-500",
-      bgColor: "bg-blue-50",
+      color: "text-emerald-700",
+      bgColor: "bg-emerald-100",
     },
     {
       icon: FaClock,
       label: "Working Hours",
       value: support?.workingHours,
-      color: "text-purple-500",
-      bgColor: "bg-purple-50",
+      color: "text-teal-700",
+      bgColor: "bg-teal-100",
     },
   ];
 
@@ -86,34 +86,34 @@ const Contact = () => {
       icon: FaFacebook,
       label: "Facebook",
       url: support?.facebook,
-      color: "text-blue-600 hover:text-blue-700",
-      bgColor: "bg-blue-100 hover:bg-blue-200",
+      color: "text-emerald-700 hover:text-emerald-800",
+      bgColor: "bg-emerald-100 hover:bg-emerald-200",
     },
     {
       icon: FaTwitter,
       label: "Twitter",
       url: support?.twitter,
-      color: "text-blue-400 hover:text-blue-500",
-      bgColor: "bg-blue-50 hover:bg-blue-100",
+      color: "text-teal-600 hover:text-teal-700",
+      bgColor: "bg-teal-50 hover:bg-teal-100",
     },
     {
       icon: FaInstagram,
       label: "Instagram",
       url: support?.instagram,
-      color: "text-pink-600 hover:text-pink-700",
-      bgColor: "bg-pink-100 hover:bg-pink-200",
+      color: "text-emerald-600 hover:text-emerald-700",
+      bgColor: "bg-emerald-50 hover:bg-emerald-100",
     },
     {
       icon: FaLinkedin,
       label: "LinkedIn",
       url: support?.linkedin,
-      color: "text-blue-700 hover:text-blue-800",
-      bgColor: "bg-blue-100 hover:bg-blue-200",
+      color: "text-teal-700 hover:text-teal-800",
+      bgColor: "bg-teal-100 hover:bg-teal-200",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -123,11 +123,11 @@ const Contact = () => {
           className="text-center mb-12 sm:mb-16"
         >
           <div className="flex justify-center mb-6">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-500 p-4 rounded-2xl shadow-lg">
+            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-4 rounded-2xl shadow-lg">
               <FaHeadset className="text-white text-3xl" />
             </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent mb-4">
             Get In Touch
           </h1>
           <p className="text-gray-600 text-lg sm:text-xl max-w-3xl mx-auto">
@@ -142,11 +142,11 @@ const Contact = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden"
+            className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 overflow-hidden"
           >
             <div className="p-6 sm:p-8 lg:p-10">
               <div className="flex items-center gap-3 mb-6">
-                <div className="bg-blue-500 p-2 rounded-xl">
+                <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-2 rounded-xl">
                   <FaPaperPlane className="text-white text-lg" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800">
@@ -159,7 +159,7 @@ const Contact = () => {
                 <div className="form-group">
                   <label className="label">
                     <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
-                      <FaUser className="text-blue-500" />
+                      <FaUser className="text-emerald-600" />
                       Full Name <span className="text-red-500">*</span>
                     </span>
                   </label>
@@ -169,7 +169,7 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -178,7 +178,7 @@ const Contact = () => {
                 <div className="form-group">
                   <label className="label">
                     <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
-                      <FaEnvelope className="text-blue-500" />
+                      <FaEnvelope className="text-emerald-600" />
                       Email Address <span className="text-red-500">*</span>
                     </span>
                   </label>
@@ -188,7 +188,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -197,7 +197,7 @@ const Contact = () => {
                 <div className="form-group">
                   <label className="label">
                     <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
-                      <FaComment className="text-blue-500" />
+                      <FaComment className="text-emerald-600" />
                       Your Message <span className="text-red-500">*</span>
                     </span>
                   </label>
@@ -207,7 +207,7 @@ const Contact = () => {
                     onChange={handleChange}
                     rows="6"
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm resize-none"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm resize-none"
                     placeholder="Tell us how we can help you..."
                   />
                 </div>
@@ -217,7 +217,7 @@ const Contact = () => {
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                 >
                   {isSubmitting ? (
                     <>
@@ -243,9 +243,9 @@ const Contact = () => {
             className="space-y-8"
           >
             {/* Contact Methods */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-6 sm:p-8 lg:p-10">
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 p-6 sm:p-8 lg:p-10">
               <div className="flex items-center gap-3 mb-6">
-                <div className="bg-green-500 p-2 rounded-xl">
+                <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-2 rounded-xl">
                   <FaHeadset className="text-white text-lg" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800">
@@ -262,7 +262,7 @@ const Contact = () => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-                      className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-200 hover:scale-105 ${method.bgColor}`}
+                      className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-200 hover:scale-105 ${method.bgColor} border border-emerald-200`}
                     >
                       <div className={`p-3 rounded-xl ${method.bgColor}`}>
                         <Icon className={`text-xl ${method.color}`} />
@@ -274,7 +274,7 @@ const Contact = () => {
                         {method.link ? (
                           <a
                             href={method.link}
-                            className="text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                            className="text-emerald-700 hover:text-emerald-800 transition-colors duration-200"
                           >
                             {method.value || "Loading..."}
                           </a>
@@ -291,7 +291,7 @@ const Contact = () => {
             </div>
 
             {/* Social Links */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-6 sm:p-8 lg:p-10">
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 p-6 sm:p-8 lg:p-10">
               <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">
                 Follow Us On Social Media
               </h3>
@@ -309,7 +309,7 @@ const Contact = () => {
                       transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className={`flex flex-col items-center gap-2 p-4 rounded-2xl transition-all duration-200 ${social.bgColor} ${social.color}`}
+                      className={`flex flex-col items-center gap-2 p-4 rounded-2xl transition-all duration-200 ${social.bgColor} ${social.color} border border-emerald-200`}
                       aria-label={social.label}
                     >
                       <Icon className="text-2xl" />
@@ -327,12 +327,12 @@ const Contact = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1 }}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl p-6 text-center text-white"
+              className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-3xl p-6 text-center text-white shadow-lg"
             >
               <h3 className="text-lg font-bold mb-2">
                 Quick Response Guaranteed
               </h3>
-              <p className="text-blue-100 text-sm">
+              <p className="text-emerald-100 text-sm">
                 We typically respond to all inquiries within 2-4 hours during
                 business hours.
               </p>
@@ -355,10 +355,10 @@ const Contact = () => {
             answers to common questions.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-6 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition-all duration-200 font-semibold">
+            <button className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl">
               Visit Help Center
             </button>
-            <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:border-gray-400 transition-all duration-200 font-semibold">
+            <button className="px-6 py-3 border-2 border-emerald-300 text-emerald-700 rounded-xl hover:border-emerald-400 hover:text-emerald-800 transition-all duration-200 font-semibold">
               Browse FAQ
             </button>
           </div>

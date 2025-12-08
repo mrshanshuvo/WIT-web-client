@@ -14,6 +14,8 @@ import {
   FaLock,
   FaCheck,
   FaTimes,
+  FaUserPlus,
+  FaShieldAlt,
 } from "react-icons/fa";
 import { axiosInstance } from "../../api/api";
 
@@ -26,24 +28,28 @@ const Register = () => {
     length: false,
     uppercase: false,
     lowercase: false,
+    number: false,
   });
   const navigate = useNavigate();
 
   const validatePassword = (password) => {
     const criteria = {
-      length: password.length >= 6,
+      length: password.length >= 8,
       uppercase: /[A-Z]/.test(password),
       lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
     };
 
     setPasswordCriteria(criteria);
 
     const errors = [];
-    if (!criteria.length) errors.push("Password must be at least 6 characters");
+    if (!criteria.length) errors.push("Password must be at least 8 characters");
     if (!criteria.uppercase)
       errors.push("Password must contain at least one uppercase letter");
     if (!criteria.lowercase)
       errors.push("Password must contain at least one lowercase letter");
+    if (!criteria.number)
+      errors.push("Password must contain at least one number");
 
     return errors.length ? errors.join(". ") : null;
   };
@@ -66,7 +72,12 @@ const Register = () => {
     const passwordValidationError = validatePassword(password);
     if (passwordValidationError) {
       setPasswordError(passwordValidationError);
-      toast.error(passwordValidationError);
+      toast.error(passwordValidationError, {
+        style: {
+          background: "#ef4444",
+          color: "#ffffff",
+        },
+      });
       setLoading(false);
       return;
     }
@@ -87,10 +98,20 @@ const Register = () => {
       );
 
       setUser(data.user);
-      toast.success("🎉 Registration successful! Welcome to WhereIsIt");
+      toast.success("🎉 Registration successful! Welcome to WhereIsIt", {
+        style: {
+          background: "#059669",
+          color: "#ffffff",
+        },
+      });
       navigate("/");
     } catch (error) {
-      toast.error(error.message || "Registration failed. Please try again.");
+      toast.error(error.message || "Registration failed. Please try again.", {
+        style: {
+          background: "#ef4444",
+          color: "#ffffff",
+        },
+      });
       console.error("Register error:", error);
     } finally {
       setLoading(false);
@@ -98,12 +119,12 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent">
               WhereIsIt
             </h1>
           </Link>
@@ -121,7 +142,7 @@ const Register = () => {
                 loop={true}
                 className="w-full h-auto"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-blue-50/50 rounded-3xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-emerald-50/50 rounded-3xl"></div>
             </div>
             <div className="mt-6 text-center lg:text-left">
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3">
@@ -129,15 +150,15 @@ const Register = () => {
               </h2>
               <div className="space-y-2 text-sm sm:text-base text-gray-600">
                 <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full animate-pulse"></div>
                   <span>Track all your items in one place</span>
                 </div>
                 <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full animate-pulse delay-150"></div>
                   <span>Access from any device</span>
                 </div>
                 <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full animate-pulse delay-300"></div>
                   <span>Smart search and categories</span>
                 </div>
               </div>
@@ -146,10 +167,13 @@ const Register = () => {
 
           {/* Registration Form - Enhanced */}
           <div className="w-full max-w-md lg:max-w-lg flex-1">
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 overflow-hidden">
               <div className="p-6 sm:p-8 lg:p-10">
                 <div className="text-center mb-8">
-                  <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                  <div className="bg-gradient-to-r from-emerald-500 to-teal-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <FaUserPlus className="text-white text-2xl" />
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-800 to-teal-800 bg-clip-text text-transparent">
                     Create Account
                   </h1>
                   <p className="text-gray-500 mt-2 text-sm sm:text-base">
@@ -162,7 +186,7 @@ const Register = () => {
                   <div className="form-group">
                     <label className="label">
                       <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
-                        <FaUser className="text-blue-500 text-sm" />
+                        <FaUser className="text-emerald-600 text-sm" />
                         Full Name
                       </span>
                     </label>
@@ -171,11 +195,13 @@ const Register = () => {
                         type="text"
                         name="name"
                         placeholder="John Doe"
-                        className="input input-bordered w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                        className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm hover:border-emerald-300"
                         required
                         autoComplete="name"
                       />
-                      <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-emerald-100 p-2 rounded-lg">
+                        <FaUser className="text-emerald-600 text-sm" />
+                      </div>
                     </div>
                   </div>
 
@@ -183,7 +209,7 @@ const Register = () => {
                   <div className="form-group">
                     <label className="label">
                       <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
-                        <FaEnvelope className="text-blue-500 text-sm" />
+                        <FaEnvelope className="text-emerald-600 text-sm" />
                         Email Address
                       </span>
                     </label>
@@ -192,11 +218,13 @@ const Register = () => {
                         type="email"
                         name="email"
                         placeholder="your@email.com"
-                        className="input input-bordered w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                        className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm hover:border-emerald-300"
                         required
                         autoComplete="email"
                       />
-                      <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-emerald-100 p-2 rounded-lg">
+                        <FaEnvelope className="text-emerald-600 text-sm" />
+                      </div>
                     </div>
                   </div>
 
@@ -204,7 +232,7 @@ const Register = () => {
                   <div className="form-group">
                     <label className="label">
                       <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
-                        <FaCamera className="text-blue-500 text-sm" />
+                        <FaCamera className="text-emerald-600 text-sm" />
                         Profile Photo URL
                       </span>
                     </label>
@@ -213,10 +241,12 @@ const Register = () => {
                         type="url"
                         name="photoURL"
                         placeholder="https://example.com/photo.jpg"
-                        className="input input-bordered w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                        className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm hover:border-emerald-300"
                         autoComplete="photo"
                       />
-                      <FaCamera className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-emerald-100 p-2 rounded-lg">
+                        <FaCamera className="text-emerald-600 text-sm" />
+                      </div>
                     </div>
                   </div>
 
@@ -224,7 +254,7 @@ const Register = () => {
                   <div className="form-group">
                     <label className="label">
                       <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
-                        <FaLock className="text-blue-500 text-sm" />
+                        <FaLock className="text-emerald-600 text-sm" />
                         Password
                       </span>
                     </label>
@@ -233,78 +263,97 @@ const Register = () => {
                         type={showPassword ? "text" : "password"}
                         name="password"
                         placeholder="••••••••"
-                        className="input input-bordered w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                        className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm hover:border-emerald-300"
                         required
                         autoComplete="new-password"
                         onChange={handlePasswordChange}
                       />
-                      <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
-                      <button
-                        type="button"
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors duration-200 p-1"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <FaEyeSlash className="text-lg" />
-                        ) : (
-                          <FaEye className="text-lg" />
-                        )}
-                      </button>
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                        <button
+                          type="button"
+                          className="text-emerald-600 hover:text-emerald-700 transition-colors duration-200 p-1"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <FaEyeSlash className="text-lg" />
+                          ) : (
+                            <FaEye className="text-lg" />
+                          )}
+                        </button>
+                        <div className="w-px h-6 bg-emerald-200"></div>
+                        <div className="bg-emerald-100 p-2 rounded-lg">
+                          <FaLock className="text-emerald-600 text-sm" />
+                        </div>
+                      </div>
                     </div>
 
                     {/* Password Criteria */}
-                    <div className="mt-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                      <p className="text-sm font-medium text-gray-700 mb-2">
+                    <div className="mt-3 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-200">
+                      <p className="text-sm font-medium text-emerald-800 mb-2">
                         Password must contain:
                       </p>
-                      <div className="space-y-1 text-sm">
+                      <div className="grid grid-cols-2 gap-2 text-sm">
                         <div
                           className={`flex items-center gap-2 ${
                             passwordCriteria.length
-                              ? "text-green-600"
+                              ? "text-emerald-600"
                               : "text-gray-500"
                           }`}
                         >
                           {passwordCriteria.length ? (
-                            <FaCheck className="text-xs" />
+                            <FaCheck className="text-xs text-emerald-500" />
                           ) : (
-                            <FaTimes className="text-xs" />
+                            <FaTimes className="text-xs text-gray-400" />
                           )}
-                          <span>At least 6 characters</span>
+                          <span>8+ characters</span>
                         </div>
                         <div
                           className={`flex items-center gap-2 ${
                             passwordCriteria.uppercase
-                              ? "text-green-600"
+                              ? "text-emerald-600"
                               : "text-gray-500"
                           }`}
                         >
                           {passwordCriteria.uppercase ? (
-                            <FaCheck className="text-xs" />
+                            <FaCheck className="text-xs text-emerald-500" />
                           ) : (
-                            <FaTimes className="text-xs" />
+                            <FaTimes className="text-xs text-gray-400" />
                           )}
-                          <span>One uppercase letter</span>
+                          <span>Uppercase letter</span>
                         </div>
                         <div
                           className={`flex items-center gap-2 ${
                             passwordCriteria.lowercase
-                              ? "text-green-600"
+                              ? "text-emerald-600"
                               : "text-gray-500"
                           }`}
                         >
                           {passwordCriteria.lowercase ? (
-                            <FaCheck className="text-xs" />
+                            <FaCheck className="text-xs text-emerald-500" />
                           ) : (
-                            <FaTimes className="text-xs" />
+                            <FaTimes className="text-xs text-gray-400" />
                           )}
-                          <span>One lowercase letter</span>
+                          <span>Lowercase letter</span>
+                        </div>
+                        <div
+                          className={`flex items-center gap-2 ${
+                            passwordCriteria.number
+                              ? "text-emerald-600"
+                              : "text-gray-500"
+                          }`}
+                        >
+                          {passwordCriteria.number ? (
+                            <FaCheck className="text-xs text-emerald-500" />
+                          ) : (
+                            <FaTimes className="text-xs text-gray-400" />
+                          )}
+                          <span>Number (0-9)</span>
                         </div>
                       </div>
                     </div>
 
                     {passwordError && (
-                      <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl">
+                      <div className="mt-3 p-3 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-xl">
                         <p className="text-sm text-red-600 flex items-center gap-2">
                           <FaTimes className="text-red-500" />
                           {passwordError}
@@ -316,31 +365,40 @@ const Register = () => {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="btn w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 border-none text-white rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:transform-none disabled:hover:shadow-lg"
+                    className="group w-full py-4 px-6 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:transform-none disabled:hover:shadow-lg disabled:cursor-not-allowed"
                     disabled={loading}
                   >
                     {loading ? (
-                      <span className="flex items-center gap-2">
-                        <span className="loading loading-spinner loading-sm"></span>
+                      <span className="flex items-center justify-center gap-2">
+                        <span className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></span>
                         Creating Account...
                       </span>
                     ) : (
-                      "Create Account"
+                      <span className="flex items-center justify-center gap-2">
+                        <FaUserPlus className="text-lg group-hover:scale-110 transition-transform duration-200" />
+                        Create Account
+                      </span>
                     )}
                   </button>
                 </form>
 
                 {/* Login Link */}
-                <div className="text-center mt-8 pt-6 border-t border-gray-200">
+                <div className="text-center mt-8 pt-6 border-t border-emerald-100">
                   <p className="text-gray-600 text-sm">
                     Already have an account?{" "}
                     <Link
                       to="/sign-in"
-                      className="text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-200 underline underline-offset-2"
+                      className="text-emerald-600 hover:text-emerald-800 font-semibold transition-colors duration-200 hover:underline underline-offset-2"
                     >
                       Sign in here
                     </Link>
                   </p>
+                  <div className="mt-4 flex items-center justify-center gap-2 text-xs text-emerald-600">
+                    <FaShieldAlt className="text-xs" />
+                    <span>
+                      Your account is protected with industry-standard security
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

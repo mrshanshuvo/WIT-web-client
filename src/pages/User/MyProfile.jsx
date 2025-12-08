@@ -103,11 +103,11 @@ const MyProfile = () => {
   const { profile, stats, memberSince } = data;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent">
             My Profile
           </h1>
           <p className="text-gray-600 mt-2">
@@ -118,11 +118,11 @@ const MyProfile = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Left Column - Profile Card */}
           <div className="lg:col-span-1">
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 overflow-hidden">
               {/* Profile Header */}
-              <div className="bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 p-6 text-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+              <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-400/20 rounded-full -mr-16 -mt-16"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-teal-400/20 rounded-full -ml-12 -mb-12"></div>
 
                 <div className="relative z-10 flex flex-col items-center text-center">
                   <div className="relative">
@@ -138,18 +138,18 @@ const MyProfile = () => {
                       )}
                     </div>
                     {profile.isAdmin && (
-                      <div className="absolute -top-2 -right-2 bg-yellow-400 text-yellow-800 p-1 rounded-full">
-                        <FaCrown className="text-sm" />
+                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-800 p-2 rounded-full shadow-lg">
+                        <FaCrown className="text-xs" />
                       </div>
                     )}
                   </div>
                   <h1 className="text-xl font-bold truncate max-w-full">
                     {profile.name || "User"}
                   </h1>
-                  <p className="text-blue-100 text-sm truncate max-w-full">
+                  <p className="text-emerald-100 text-sm truncate max-w-full">
                     {profile.email}
                   </p>
-                  <div className="mt-2 text-xs text-blue-200">
+                  <div className="mt-2 text-xs text-emerald-200">
                     Member since {formatDate(memberSince)}
                   </div>
                 </div>
@@ -158,22 +158,26 @@ const MyProfile = () => {
               {/* Quick Actions */}
               <div className="p-6">
                 <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                  <FaEdit className="text-blue-500" />
+                  <FaEdit className="text-emerald-600" />
                   Quick Actions
                 </h3>
                 <div className="space-y-3">
                   <button
                     onClick={() => navigate("/edit-profile")}
-                    className="w-full flex items-center gap-3 px-4 py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl transition-all duration-200 hover:scale-105"
+                    className="w-full flex items-center gap-3 px-4 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl transition-all duration-200 hover:scale-105 border border-emerald-200 hover:border-emerald-300 group"
                   >
-                    <FaUser className="text-blue-500" />
+                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-2 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                      <FaUser className="text-white text-sm" />
+                    </div>
                     <span>Edit Profile</span>
                   </button>
                   <button
                     onClick={() => navigate("/share-profile")}
-                    className="w-full flex items-center gap-3 px-4 py-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl transition-all duration-200 hover:scale-105"
+                    className="w-full flex items-center gap-3 px-4 py-3 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-xl transition-all duration-200 hover:scale-105 border border-teal-200 hover:border-teal-300 group"
                   >
-                    <FaShare className="text-green-500" />
+                    <div className="bg-gradient-to-r from-teal-500 to-emerald-500 p-2 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                      <FaShare className="text-white text-sm" />
+                    </div>
                     <span>Share Profile</span>
                   </button>
                 </div>
@@ -184,54 +188,57 @@ const MyProfile = () => {
           {/* Right Column - Stats and Actions */}
           <div className="lg:col-span-2 space-y-6 lg:space-y-8">
             {/* Stats Section */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 overflow-hidden">
               <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                  <FaHistory className="text-blue-500" />
+                  <FaHistory className="text-emerald-600" />
                   Your Activity Overview
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-2xl border border-blue-200 text-center group hover:shadow-lg transition-all duration-300">
-                    <div className="bg-blue-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300">
+                  {/* Items Posted - Primary emerald */}
+                  <div className="bg-gradient-to-br from-emerald-50 to-white p-5 rounded-2xl border border-emerald-200 text-center group hover:shadow-lg hover:border-emerald-300 transition-all duration-300">
+                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300 shadow-md">
                       <FaBox className="text-white text-lg" />
                     </div>
-                    <h3 className="font-semibold text-blue-800 mb-1">
+                    <h3 className="font-semibold text-emerald-800 mb-1">
                       Items Posted
                     </h3>
-                    <p className="text-3xl font-bold text-blue-600">
+                    <p className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">
                       {stats.itemsPosted}
                     </p>
-                    <p className="text-xs text-blue-500 mt-1">
+                    <p className="text-xs text-emerald-600 mt-1">
                       Lost items reported
                     </p>
                   </div>
 
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-2xl border border-green-200 text-center group hover:shadow-lg transition-all duration-300">
-                    <div className="bg-green-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300">
+                  {/* Items Recovered - Balanced teal/emerald */}
+                  <div className="bg-gradient-to-br from-teal-50 to-white p-5 rounded-2xl border border-teal-200 text-center group hover:shadow-lg hover:border-teal-300 transition-all duration-300">
+                    <div className="bg-gradient-to-r from-teal-500 to-emerald-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300 shadow-md">
                       <FaCheckCircle className="text-white text-lg" />
                     </div>
-                    <h3 className="font-semibold text-green-800 mb-1">
+                    <h3 className="font-semibold text-teal-800 mb-1">
                       Items Recovered
                     </h3>
-                    <p className="text-3xl font-bold text-green-600">
+                    <p className="text-3xl font-bold bg-gradient-to-r from-teal-600 to-teal-700 bg-clip-text text-transparent">
                       {stats.itemsRecovered}
                     </p>
-                    <p className="text-xs text-green-500 mt-1">
+                    <p className="text-xs text-teal-600 mt-1">
                       Your items found
                     </p>
                   </div>
 
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-2xl border border-purple-200 text-center group hover:shadow-lg transition-all duration-300">
-                    <div className="bg-purple-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300">
+                  {/* Items Found - Deeper emerald for significance */}
+                  <div className="bg-gradient-to-br from-emerald-100 to-white p-5 rounded-2xl border border-emerald-300 text-center group hover:shadow-lg hover:border-emerald-400 transition-all duration-300">
+                    <div className="bg-gradient-to-r from-emerald-600 to-teal-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300 shadow-md">
                       <FaSearch className="text-white text-lg" />
                     </div>
-                    <h3 className="font-semibold text-purple-800 mb-1">
+                    <h3 className="font-semibold text-emerald-900 mb-1">
                       Items Found
                     </h3>
-                    <p className="text-3xl font-bold text-purple-600">
+                    <p className="text-3xl font-bold bg-gradient-to-r from-emerald-700 to-emerald-800 bg-clip-text text-transparent">
                       {stats.itemsFound}
                     </p>
-                    <p className="text-xs text-purple-500 mt-1">
+                    <p className="text-xs text-emerald-700 mt-1">
                       Helped others recover
                     </p>
                   </div>
@@ -240,18 +247,19 @@ const MyProfile = () => {
             </div>
 
             {/* Actions Section */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 overflow-hidden">
               <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                  <FaUser className="text-blue-500" />
+                  <FaUser className="text-emerald-600" />
                   Account Management
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* My Items - Primary action */}
                   <button
                     onClick={() => navigate("/my-items")}
-                    className="flex items-center gap-4 p-4 bg-gray-50 hover:bg-blue-50 border border-gray-200 rounded-xl transition-all duration-200 hover:border-blue-300 hover:scale-105 group"
+                    className="flex items-center gap-4 p-4 bg-gradient-to-r from-emerald-50 to-white hover:from-emerald-100 hover:to-white border border-emerald-200 rounded-xl transition-all duration-200 hover:border-emerald-300 hover:scale-105 group"
                   >
-                    <div className="bg-blue-500 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300 shadow-sm">
                       <FaBox className="text-white text-lg" />
                     </div>
                     <div className="text-left">
@@ -262,11 +270,12 @@ const MyProfile = () => {
                     </div>
                   </button>
 
+                  {/* My Recoveries - Secondary action */}
                   <button
                     onClick={() => navigate("/my-recovered-items")}
-                    className="flex items-center gap-4 p-4 bg-gray-50 hover:bg-green-50 border border-gray-200 rounded-xl transition-all duration-200 hover:border-green-300 hover:scale-105 group"
+                    className="flex items-center gap-4 p-4 bg-gradient-to-r from-teal-50 to-white hover:from-teal-100 hover:to-white border border-teal-200 rounded-xl transition-all duration-200 hover:border-teal-300 hover:scale-105 group"
                   >
-                    <div className="bg-green-500 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <div className="bg-gradient-to-r from-teal-500 to-emerald-500 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300 shadow-sm">
                       <FaCheckCircle className="text-white text-lg" />
                     </div>
                     <div className="text-left">
@@ -279,11 +288,12 @@ const MyProfile = () => {
                     </div>
                   </button>
 
+                  {/* Post New Item - CTA action */}
                   <button
-                    onClick={() => navigate("/post-item")}
-                    className="flex items-center gap-4 p-4 bg-gray-50 hover:bg-purple-50 border border-gray-200 rounded-xl transition-all duration-200 hover:border-purple-300 hover:scale-105 group"
+                    onClick={() => navigate("/add-item")}
+                    className="flex items-center gap-4 p-4 bg-gradient-to-r from-emerald-100 to-white hover:from-emerald-200 hover:to-white border border-emerald-300 rounded-xl transition-all duration-200 hover:border-emerald-400 hover:scale-105 group"
                   >
-                    <div className="bg-purple-500 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300 shadow-sm">
                       <FaShare className="text-white text-lg" />
                     </div>
                     <div className="text-left">
@@ -296,11 +306,12 @@ const MyProfile = () => {
                     </div>
                   </button>
 
+                  {/* Log Out - Destructive action */}
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-4 p-4 bg-gray-50 hover:bg-red-50 border border-gray-200 rounded-xl transition-all duration-200 hover:border-red-300 hover:scale-105 group"
+                    className="flex items-center gap-4 p-4 bg-gradient-to-r from-red-50 to-white hover:from-red-100 hover:to-white border border-red-200 rounded-xl transition-all duration-200 hover:border-red-300 hover:scale-105 group"
                   >
-                    <div className="bg-red-500 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <div className="bg-gradient-to-r from-red-500 to-red-600 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300 shadow-sm">
                       <FaSignOutAlt className="text-white text-lg" />
                     </div>
                     <div className="text-left">
