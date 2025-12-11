@@ -119,75 +119,75 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className=" bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-6 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
+        <div className="text-center mb-6 sm:mb-8">
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent">
               WhereIsIt
             </h1>
           </Link>
-          <p className="mt-2 text-gray-600 text-sm sm:text-base">
-            Join thousands of users organizing their digital life
+          <p className="mt-1.5 text-gray-600 text-sm sm:text-base">
+            Join thousands of users organizing their digital life.
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 xl:gap-16">
-          {/* Animation Section - Enhanced */}
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-10 xl:gap-12">
+          {/* Animation Section */}
           <div className="w-full max-w-md lg:max-w-lg xl:max-w-xl flex-1">
-            <div className="relative">
+            <div className="relative rounded-2xl overflow-hidden">
               <Lottie
                 animationData={registerLottie}
                 loop={true}
                 className="w-full h-auto"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-emerald-50/50 rounded-3xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-emerald-50/50" />
             </div>
-            <div className="mt-6 text-center lg:text-left">
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3">
-                Start Your Organized Journey
+            <div className="mt-4 text-center lg:text-left">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
+                Start your organized journey
               </h2>
-              <div className="space-y-2 text-sm sm:text-base text-gray-600">
+              <div className="space-y-1.5 text-sm sm:text-base text-gray-600">
                 <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <div className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full animate-pulse" />
                   <span>Track all your items in one place</span>
                 </div>
                 <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <div className="w-2 h-2 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full animate-pulse delay-150"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full animate-pulse delay-150" />
                   <span>Access from any device</span>
                 </div>
                 <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <div className="w-2 h-2 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full animate-pulse delay-300"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full animate-pulse delay-300" />
                   <span>Smart search and categories</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Registration Form - Enhanced */}
+          {/* Registration Form */}
           <div className="w-full max-w-md lg:max-w-lg flex-1">
-            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 overflow-hidden">
-              <div className="p-6 sm:p-8 lg:p-10">
-                <div className="text-center mb-8">
-                  <div className="bg-gradient-to-r from-emerald-500 to-teal-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <FaUserPlus className="text-white text-2xl" />
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 overflow-hidden">
+              <div className="p-5 sm:p-6 lg:p-7">
+                <div className="text-center mb-6">
+                  <div className="bg-gradient-to-r from-emerald-500 to-teal-500 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 shadow">
+                    <FaUserPlus className="text-white text-xl" />
                   </div>
-                  <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-800 to-teal-800 bg-clip-text text-transparent">
-                    Create Account
+                  <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-800 to-teal-800 bg-clip-text text-transparent">
+                    Create account
                   </h1>
-                  <p className="text-gray-500 mt-2 text-sm sm:text-base">
-                    Join us today and get organized
+                  <p className="text-gray-500 mt-1.5 text-sm sm:text-base">
+                    Join us today and get organized.
                   </p>
                 </div>
 
-                <form onSubmit={handleRegister} className="space-y-5">
+                <form onSubmit={handleRegister} className="space-y-4">
                   {/* Name Input */}
-                  <div className="form-group">
-                    <label className="label">
-                      <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                  <div>
+                    <label className="block mb-1.5">
+                      <span className="font-semibold text-gray-700 text-sm flex items-center gap-2">
                         <FaUser className="text-emerald-600 text-sm" />
-                        Full Name
+                        Full name
                       </span>
                     </label>
                     <div className="relative">
@@ -195,45 +195,45 @@ const Register = () => {
                         type="text"
                         name="name"
                         placeholder="John Doe"
-                        className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm hover:border-emerald-300"
+                        className="w-full pl-3.5 pr-11 py-2.5 border border-gray-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-150 bg-white/60 backdrop-blur-sm hover:border-emerald-300 text-sm"
                         required
                         autoComplete="name"
                       />
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-emerald-100 p-2 rounded-lg">
-                        <FaUser className="text-emerald-600 text-sm" />
+                      <div className="absolute right-2.5 top-1/2 -translate-y-1/2 bg-emerald-100 p-1.5 rounded-md">
+                        <FaUser className="text-emerald-600 text-xs" />
                       </div>
                     </div>
                   </div>
 
                   {/* Email Input */}
-                  <div className="form-group">
-                    <label className="label">
-                      <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                  <div>
+                    <label className="block mb-1.5">
+                      <span className="font-semibold text-gray-700 text-sm flex items-center gap-2">
                         <FaEnvelope className="text-emerald-600 text-sm" />
-                        Email Address
+                        Email address
                       </span>
                     </label>
                     <div className="relative">
                       <input
                         type="email"
                         name="email"
-                        placeholder="your@email.com"
-                        className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm hover:border-emerald-300"
+                        placeholder="you@example.com"
+                        className="w-full pl-3.5 pr-11 py-2.5 border border-gray-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-150 bg-white/60 backdrop-blur-sm hover:border-emerald-300 text-sm"
                         required
                         autoComplete="email"
                       />
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-emerald-100 p-2 rounded-lg">
-                        <FaEnvelope className="text-emerald-600 text-sm" />
+                      <div className="absolute right-2.5 top-1/2 -translate-y-1/2 bg-emerald-100 p-1.5 rounded-md">
+                        <FaEnvelope className="text-emerald-600 text-xs" />
                       </div>
                     </div>
                   </div>
 
                   {/* Photo URL Input */}
-                  <div className="form-group">
-                    <label className="label">
-                      <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                  <div>
+                    <label className="block mb-1.5">
+                      <span className="font-semibold text-gray-700 text-sm flex items-center gap-2">
                         <FaCamera className="text-emerald-600 text-sm" />
-                        Profile Photo URL
+                        Profile photo URL
                       </span>
                     </label>
                     <div className="relative">
@@ -241,19 +241,19 @@ const Register = () => {
                         type="url"
                         name="photoURL"
                         placeholder="https://example.com/photo.jpg"
-                        className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm hover:border-emerald-300"
+                        className="w-full pl-3.5 pr-11 py-2.5 border border-gray-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-150 bg-white/60 backdrop-blur-sm hover:border-emerald-300 text-sm"
                         autoComplete="photo"
                       />
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-emerald-100 p-2 rounded-lg">
-                        <FaCamera className="text-emerald-600 text-sm" />
+                      <div className="absolute right-2.5 top-1/2 -translate-y-1/2 bg-emerald-100 p-1.5 rounded-md">
+                        <FaCamera className="text-emerald-600 text-xs" />
                       </div>
                     </div>
                   </div>
 
                   {/* Password Input */}
-                  <div className="form-group">
-                    <label className="label">
-                      <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                  <div>
+                    <label className="block mb-1.5">
+                      <span className="font-semibold text-gray-700 text-sm flex items-center gap-2">
                         <FaLock className="text-emerald-600 text-sm" />
                         Password
                       </span>
@@ -263,36 +263,36 @@ const Register = () => {
                         type={showPassword ? "text" : "password"}
                         name="password"
                         placeholder="••••••••"
-                        className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm hover:border-emerald-300"
+                        className="w-full pl-3.5 pr-12 py-2.5 border border-gray-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-150 bg-white/60 backdrop-blur-sm hover:border-emerald-300 text-sm"
                         required
                         autoComplete="new-password"
                         onChange={handlePasswordChange}
                       />
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                      <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-2">
                         <button
                           type="button"
-                          className="text-emerald-600 hover:text-emerald-700 transition-colors duration-200 p-1"
-                          onClick={() => setShowPassword(!showPassword)}
+                          className="text-emerald-600 hover:text-emerald-700 transition-colors duration-150 p-1"
+                          onClick={() => setShowPassword((p) => !p)}
                         >
                           {showPassword ? (
-                            <FaEyeSlash className="text-lg" />
+                            <FaEyeSlash className="text-base" />
                           ) : (
-                            <FaEye className="text-lg" />
+                            <FaEye className="text-base" />
                           )}
                         </button>
-                        <div className="w-px h-6 bg-emerald-200"></div>
-                        <div className="bg-emerald-100 p-2 rounded-lg">
-                          <FaLock className="text-emerald-600 text-sm" />
+                        <div className="w-px h-5 bg-emerald-200" />
+                        <div className="bg-emerald-100 p-1.5 rounded-md">
+                          <FaLock className="text-emerald-600 text-xs" />
                         </div>
                       </div>
                     </div>
 
                     {/* Password Criteria */}
-                    <div className="mt-3 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-200">
-                      <p className="text-sm font-medium text-emerald-800 mb-2">
+                    <div className="mt-3 p-3.5 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg border border-emerald-200">
+                      <p className="text-xs sm:text-sm font-medium text-emerald-800 mb-2">
                         Password must contain:
                       </p>
-                      <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="grid grid-cols-2 gap-1.5 text-xs sm:text-sm">
                         <div
                           className={`flex items-center gap-2 ${
                             passwordCriteria.length
@@ -347,14 +347,14 @@ const Register = () => {
                           ) : (
                             <FaTimes className="text-xs text-gray-400" />
                           )}
-                          <span>Number (0-9)</span>
+                          <span>Number (0–9)</span>
                         </div>
                       </div>
                     </div>
 
                     {passwordError && (
-                      <div className="mt-3 p-3 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-xl">
-                        <p className="text-sm text-red-600 flex items-center gap-2">
+                      <div className="mt-3 p-3 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg">
+                        <p className="text-xs sm:text-sm text-red-600 flex items-center gap-2">
                           <FaTimes className="text-red-500" />
                           {passwordError}
                         </p>
@@ -365,35 +365,35 @@ const Register = () => {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="group w-full py-4 px-6 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:transform-none disabled:hover:shadow-lg disabled:cursor-not-allowed"
+                    className="group w-full py-3 px-5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-707 hover:to-teal-700 text-white rounded-lg font-semibold text-sm sm:text-base shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-150 disabled:opacity-50 disabled:transform-none disabled:hover:shadow-md disabled:cursor-not-allowed"
                     disabled={loading}
                   >
                     {loading ? (
                       <span className="flex items-center justify-center gap-2">
-                        <span className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></span>
-                        Creating Account...
+                        <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white" />
+                        Creating account...
                       </span>
                     ) : (
                       <span className="flex items-center justify-center gap-2">
-                        <FaUserPlus className="text-lg group-hover:scale-110 transition-transform duration-200" />
-                        Create Account
+                        <FaUserPlus className="text-base group-hover:scale-110 transition-transform duration-150" />
+                        Create account
                       </span>
                     )}
                   </button>
                 </form>
 
                 {/* Login Link */}
-                <div className="text-center mt-8 pt-6 border-t border-emerald-100">
-                  <p className="text-gray-600 text-sm">
+                <div className="text-center mt-6 pt-4 border-t border-emerald-100">
+                  <p className="text-gray-600 text-xs sm:text-sm">
                     Already have an account?{" "}
                     <Link
                       to="/sign-in"
-                      className="text-emerald-600 hover:text-emerald-800 font-semibold transition-colors duration-200 hover:underline underline-offset-2"
+                      className="text-emerald-600 hover:text-emerald-800 font-semibold transition-colors duration-150 hover:underline underline-offset-2"
                     >
                       Sign in here
                     </Link>
                   </p>
-                  <div className="mt-4 flex items-center justify-center gap-2 text-xs text-emerald-600">
+                  <div className="mt-3 flex items-center justify-center gap-2 text-[11px] sm:text-xs text-emerald-600">
                     <FaShieldAlt className="text-xs" />
                     <span>
                       Your account is protected with industry-standard security

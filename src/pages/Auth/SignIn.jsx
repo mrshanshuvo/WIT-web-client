@@ -8,7 +8,6 @@ import {
   FaLock,
   FaEye,
   FaEyeSlash,
-  FaArrowLeft,
   FaCheckCircle,
   FaShieldAlt,
 } from "react-icons/fa";
@@ -56,82 +55,75 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className=" bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-6 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <button
-            onClick={() => navigate("/")}
-            className="group inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-800 transition-colors duration-200 mb-4"
-          >
-            <FaArrowLeft className="text-sm group-hover:-translate-x-1 transition-transform duration-200" />
-            <span>Back to Home</span>
-          </button>
+        <div className="text-center mb-6 sm:mb-8">
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent">
               WhereIsIt
             </h1>
           </Link>
-          <p className="mt-2 text-gray-600 text-sm sm:text-base">
-            Welcome back! Sign in to continue your organized journey
+          <p className="mt-1.5 text-gray-600 text-sm sm:text-base">
+            Welcome back! Sign in to continue your organized journey.
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 xl:gap-16">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-10 xl:gap-12">
           {/* Animation Section */}
           <div className="w-full max-w-md lg:max-w-lg xl:max-w-xl flex-1">
-            <div className="relative">
+            <div className="relative rounded-2xl overflow-hidden">
               <Lottie
                 animationData={loginLottie}
                 loop={true}
                 className="w-full h-auto"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-emerald-50/50 rounded-3xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-emerald-50/50" />
             </div>
-            <div className="mt-6 text-center lg:text-left">
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3">
-                Ready to Continue?
+            <div className="mt-4 text-center lg:text-left">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
+                Ready to continue?
               </h2>
-              <div className="space-y-2 text-sm sm:text-base text-gray-600">
+              <div className="space-y-1.5 text-sm sm:text-base text-gray-600">
                 <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <div className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full animate-pulse" />
                   <span>Access your organized items</span>
                 </div>
                 <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <div className="w-2 h-2 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full animate-pulse delay-150"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full animate-pulse delay-150" />
                   <span>Sync across all your devices</span>
                 </div>
                 <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <div className="w-2 h-2 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full animate-pulse delay-300"></div>
+                  <div className="w-2 h-2 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full animate-pulse delay-300" />
                   <span>Quick and secure access</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Sign In Form - Enhanced */}
+          {/* Sign In Form */}
           <div className="w-full max-w-md lg:max-w-lg flex-1">
-            <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 overflow-hidden">
-              <div className="p-6 sm:p-8 lg:p-10">
-                <div className="text-center mb-8">
-                  <div className="bg-gradient-to-r from-emerald-500 to-teal-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <FaShieldAlt className="text-white text-2xl" />
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 overflow-hidden">
+              <div className="p-5 sm:p-6 lg:p-7">
+                <div className="text-center mb-6">
+                  <div className="bg-gradient-to-r from-emerald-500 to-teal-500 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 shadow">
+                    <FaShieldAlt className="text-white text-xl" />
                   </div>
-                  <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-800 to-teal-800 bg-clip-text text-transparent">
-                    Welcome Back
+                  <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-800 to-teal-800 bg-clip-text text-transparent">
+                    Welcome back
                   </h1>
-                  <p className="text-gray-500 mt-2 text-sm sm:text-base">
+                  <p className="text-gray-500 mt-1.5 text-sm sm:text-base">
                     Sign in to your account
                   </p>
                 </div>
 
-                <form onSubmit={handleSignIn} className="space-y-6">
+                <form onSubmit={handleSignIn} className="space-y-4">
                   {/* Email Input */}
-                  <div className="form-group">
-                    <label className="label">
-                      <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                  <div>
+                    <label className="block mb-1.5">
+                      <span className="font-semibold text-gray-700 text-sm flex items-center gap-2">
                         <FaEnvelope className="text-emerald-600 text-sm" />
-                        Email Address
+                        Email address
                       </span>
                     </label>
                     <div className="relative">
@@ -139,21 +131,21 @@ const SignIn = () => {
                         type="email"
                         name="email"
                         id="email"
-                        placeholder="your@email.com"
-                        className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm hover:border-emerald-300"
+                        placeholder="you@example.com"
+                        className="w-full pl-3.5 pr-11 py-2.5 border border-gray-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-150 bg-white/60 backdrop-blur-sm hover:border-emerald-300 text-sm"
                         required
                         autoComplete="email"
                       />
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-emerald-100 p-2 rounded-lg">
-                        <FaEnvelope className="text-emerald-600 text-sm" />
+                      <div className="absolute right-2.5 top-1/2 -translate-y-1/2 bg-emerald-100 p-1.5 rounded-md">
+                        <FaEnvelope className="text-emerald-600 text-xs" />
                       </div>
                     </div>
                   </div>
 
                   {/* Password Input */}
-                  <div className="form-group">
-                    <label className="label">
-                      <span className="label-text font-semibold text-gray-700 flex items-center gap-2">
+                  <div>
+                    <label className="block mb-1.5">
+                      <span className="font-semibold text-gray-700 text-sm flex items-center gap-2">
                         <FaLock className="text-emerald-600 text-sm" />
                         Password
                       </span>
@@ -164,34 +156,33 @@ const SignIn = () => {
                         name="password"
                         id="password"
                         placeholder="••••••••"
-                        className="w-full pl-4 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/50 backdrop-blur-sm hover:border-emerald-300"
+                        className="w-full pl-3.5 pr-12 py-2.5 border border-gray-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-150 bg-white/60 backdrop-blur-sm hover:border-emerald-300 text-sm"
                         required
                         autoComplete="current-password"
                       />
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                      <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-2">
                         <button
                           type="button"
-                          className="text-emerald-600 hover:text-emerald-700 transition-colors duration-200 p-1"
-                          onClick={() => setShowPassword(!showPassword)}
+                          className="text-emerald-600 hover:text-emerald-700 transition-colors duration-150 p-1"
+                          onClick={() => setShowPassword((p) => !p)}
                         >
                           {showPassword ? (
-                            <FaEyeSlash className="text-lg" />
+                            <FaEyeSlash className="text-base" />
                           ) : (
-                            <FaEye className="text-lg" />
+                            <FaEye className="text-base" />
                           )}
                         </button>
-                        <div className="w-px h-6 bg-emerald-200"></div>
-                        <div className="bg-emerald-100 p-2 rounded-lg">
-                          <FaLock className="text-emerald-600 text-sm" />
+                        <div className="w-px h-5 bg-emerald-200" />
+                        <div className="bg-emerald-100 p-1.5 rounded-md">
+                          <FaLock className="text-emerald-600 text-xs" />
                         </div>
                       </div>
                     </div>
 
-                    {/* Forgot Password Link */}
                     <div className="text-right mt-2">
                       <Link
                         to="/forgot-password"
-                        className="text-sm text-emerald-600 hover:text-emerald-800 font-medium transition-colors duration-200 hover:underline"
+                        className="text-xs sm:text-sm text-emerald-600 hover:text-emerald-800 font-medium transition-colors duration-150 hover:underline"
                       >
                         Forgot your password?
                       </Link>
@@ -201,18 +192,18 @@ const SignIn = () => {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="group w-full py-4 px-6 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-semibold text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:transform-none disabled:hover:shadow-lg disabled:cursor-not-allowed"
+                    className="group w-full py-3 px-5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-lg font-semibold text-sm sm:text-base shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-150 disabled:opacity-50 disabled:transform-none disabled:hover:shadow-md disabled:cursor-not-allowed"
                     disabled={loading}
                   >
                     {loading ? (
                       <span className="flex items-center justify-center gap-2">
-                        <span className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></span>
-                        Signing In...
+                        <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white" />
+                        Signing in...
                       </span>
                     ) : (
                       <span className="flex items-center justify-center gap-2">
-                        <FaCheckCircle className="text-lg group-hover:animate-bounce" />
-                        Sign In
+                        <FaCheckCircle className="text-base group-hover:animate-bounce" />
+                        Sign in
                       </span>
                     )}
                   </button>
@@ -222,17 +213,17 @@ const SignIn = () => {
                 <SocialLogin from={from} />
 
                 {/* Sign Up Link */}
-                <div className="text-center mt-8 pt-6 border-t border-emerald-100">
-                  <p className="text-gray-600 text-sm">
-                    Don't have an account?{" "}
+                <div className="text-center mt-6 pt-4 border-t border-emerald-100">
+                  <p className="text-gray-600 text-xs sm:text-sm">
+                    Do not have an account?{" "}
                     <Link
                       to="/register"
-                      className="text-emerald-600 hover:text-emerald-800 font-semibold transition-colors duration-200 hover:underline underline-offset-2"
+                      className="text-emerald-600 hover:text-emerald-800 font-semibold transition-colors duration-150 hover:underline underline-offset-2"
                     >
                       Create one here
                     </Link>
                   </p>
-                  <div className="mt-4 flex items-center justify-center gap-2 text-xs text-emerald-600">
+                  <div className="mt-3 flex items-center justify-center gap-2 text-[11px] sm:text-xs text-emerald-600">
                     <FaShieldAlt className="text-xs" />
                     <span>
                       Your data is protected with end-to-end encryption

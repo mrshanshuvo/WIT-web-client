@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade, Navigation } from "swiper/modules";
-
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -31,14 +30,14 @@ const BannerSlider = () => {
 
   if (isLoading)
     return (
-      <div className="h-[300px] sm:h-[400px] md:h-[500px] rounded-3xl bg-gradient-to-r from-emerald-50 to-teal-50 flex items-center justify-center border-2 border-emerald-100">
-        <div className="text-center space-y-4">
-          <div className="text-4xl mb-2">🔍</div>
-          <p className="text-gray-600 font-medium">
+      <div className="h-[260px] sm:h-[320px] md:h-[380px] rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 flex items-center justify-center border border-emerald-100">
+        <div className="text-center space-y-3">
+          <div className="text-3xl mb-1">🔍</div>
+          <p className="text-gray-600 text-sm sm:text-base font-medium">
             Loading featured content...
           </p>
-          <div className="w-48 h-1 mx-auto bg-gradient-to-r from-emerald-200 to-teal-200 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 animate-pulse w-1/2"></div>
+          <div className="w-40 h-1 mx-auto bg-gradient-to-r from-emerald-200 to-teal-200 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 animate-pulse w-1/2" />
           </div>
         </div>
       </div>
@@ -46,16 +45,18 @@ const BannerSlider = () => {
 
   if (isError)
     return (
-      <div className="h-[300px] sm:h-[400px] md:h-[500px] rounded-3xl bg-gradient-to-r from-red-50 to-orange-50 flex items-center justify-center border-2 border-red-100">
-        <div className="text-center p-6">
-          <div className="text-4xl mb-4">⚠️</div>
-          <h3 className="text-xl font-bold text-gray-800 mb-2">
+      <div className="h-[260px] sm:h-[320px] md:h-[380px] rounded-2xl bg-gradient-to-r from-red-50 to-orange-50 flex items-center justify-center border border-red-100">
+        <div className="text-center p-4">
+          <div className="text-3xl mb-2">⚠️</div>
+          <h3 className="text-lg font-bold text-gray-800 mb-1">
             Unable to load slides
           </h3>
-          <p className="text-gray-600 mb-4">Please check your connection</p>
+          <p className="text-gray-600 mb-3 text-sm">
+            Please check your connection
+          </p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-medium hover:shadow-lg transition-all"
+            className="px-5 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-sm rounded-lg font-medium hover:shadow-md transition-all"
           >
             Try Again
           </button>
@@ -66,14 +67,14 @@ const BannerSlider = () => {
   return (
     <section
       aria-label="Featured Highlights"
-      className="relative w-full overflow-hidden rounded-3xl shadow-2xl"
+      className="relative w-full overflow-hidden rounded-2xl shadow-xl"
     >
       <Swiper
         modules={[Autoplay, Pagination, EffectFade, Navigation]}
         slidesPerView={1}
-        loop={true}
+        loop
         effect="fade"
-        speed={800}
+        speed={700}
         autoplay={{
           delay: 5000,
           disableOnInteraction: false,
@@ -89,58 +90,56 @@ const BannerSlider = () => {
           swiper.params.navigation.prevEl = prevRef.current;
           swiper.params.navigation.nextEl = nextRef.current;
         }}
-        className="h-[350px] sm:h-[450px] md:h-[550px] lg:h-[650px]"
+        className="h-[360px] sm:h-[420px] md:h-[480px] lg:h-[520px]"
       >
         {slides.map(
           ({ title, description, bgImage, actionText, actionLink }, idx) => (
             <SwiperSlide key={idx}>
-              <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+              <div className="relative w-full h-full flex items-center overflow-hidden">
                 <img
                   src={bgImage}
                   alt={title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-10000 ease-out group-hover:scale-110"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[8000ms] ease-out"
                   loading="lazy"
                   draggable={false}
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
-                <div className="relative z-10 px-6 sm:px-8 md:px-12 lg:px-16 max-w-4xl text-left ml-8 sm:ml-12">
+                <div className="relative z-10 px-5 sm:px-8 md:px-10 max-w-3xl text-left ml-4 sm:ml-8">
                   <motion.div
-                    initial={{ opacity: 0, x: -50 }}
+                    initial={{ opacity: 0, x: -40 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="space-y-6"
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="space-y-4"
                   >
-                    <div className="inline-block">
-                      <span className="px-4 py-2 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 backdrop-blur-sm rounded-xl border border-emerald-300/30 text-emerald-300 text-sm font-medium">
-                        Featured Highlight
-                      </span>
-                    </div>
+                    <span className="inline-block px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-lg border border-emerald-300/40 text-emerald-200 text-xs font-medium">
+                      Featured highlight
+                    </span>
 
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-snug">
                       {title}
                     </h2>
 
-                    <p className="text-lg sm:text-xl md:text-2xl text-gray-200 leading-relaxed max-w-2xl drop-shadow-lg">
+                    <p className="text-sm sm:text-base md:text-lg text-gray-200 leading-relaxed max-w-xl">
                       {description}
                     </p>
 
                     {actionText && actionLink && (
                       <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="pt-4"
+                        whileHover={{ scale: 1.04 }}
+                        whileTap={{ scale: 0.96 }}
+                        className="pt-2"
                       >
                         <a
                           href={actionLink}
-                          className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl shadow-2xl hover:shadow-emerald-500/25 transition-all duration-300 overflow-hidden"
+                          className="group relative inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-bold rounded-lg shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 overflow-hidden"
                           aria-label={actionText}
                         >
-                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                          <span className="relative text-lg">✨</span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                          <span className="relative text-base">✨</span>
                           <span className="relative">{actionText}</span>
-                          <span className="relative ml-2 group-hover:translate-x-2 transition-transform">
+                          <span className="relative ml-1 group-hover:translate-x-1 transition-transform">
                             →
                           </span>
                         </a>
@@ -148,49 +147,40 @@ const BannerSlider = () => {
                     )}
                   </motion.div>
                 </div>
-
-                {/* Decorative corner element */}
-                <div className="absolute bottom-8 right-8 opacity-20">
-                  <div className="text-8xl">📍</div>
-                </div>
               </div>
             </SwiperSlide>
           )
         )}
 
-        {/* Navigation buttons */}
+        {/* Navigation buttons (smaller) */}
         <div
           ref={prevRef}
-          className="absolute top-1/2 left-6 -translate-y-1/2 z-20 w-12 h-12 bg-gradient-to-r from-emerald-500/80 to-teal-500/80 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:scale-110 hover:shadow-2xl transition-all duration-300 group"
+          className="absolute top-1/2 left-3 sm:left-4 -translate-y-1/2 z-20 w-9 h-9 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:scale-105 hover:bg-black/55 transition-all duration-200"
         >
-          <span className="text-white text-2xl font-bold group-hover:-translate-x-1 transition-transform">
-            ←
-          </span>
+          <span className="text-white text-lg font-bold">←</span>
         </div>
         <div
           ref={nextRef}
-          className="absolute top-1/2 right-6 -translate-y-1/2 z-20 w-12 h-12 bg-gradient-to-r from-emerald-500/80 to-teal-500/80 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:scale-110 hover:shadow-2xl transition-all duration-300 group"
+          className="absolute top-1/2 right-3 sm:right-4 -translate-y-1/2 z-20 w-9 h-9 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:scale-105 hover:bg-black/55 transition-all duration-200"
         >
-          <span className="text-white text-2xl font-bold group-hover:translate-x-1 transition-transform">
-            →
-          </span>
+          <span className="text-white text-lg font-bold">→</span>
         </div>
       </Swiper>
 
       {/* Custom pagination styles */}
       <style>{`
         .swiper-pagination-bullet {
-          width: 12px;
-          height: 12px;
-          background: rgba(255, 255, 255, 0.3);
+          width: 8px;
+          height: 8px;
+          background: rgba(255, 255, 255, 0.35);
           opacity: 1;
-          margin: 0 6px !important;
-          transition: all 0.3s ease;
+          margin: 0 4px !important;
+          transition: all 0.25s ease;
         }
         .swiper-pagination-bullet-active {
           background: linear-gradient(135deg, #10b981, #0d9488);
-          transform: scale(1.2);
-          box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+          transform: scale(1.25);
+          box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
         }
       `}</style>
     </section>

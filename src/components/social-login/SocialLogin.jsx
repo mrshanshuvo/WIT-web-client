@@ -11,8 +11,7 @@ const SocialLogin = ({ from }) => {
 
   const handleGoogleSignIn = async () => {
     try {
-      const userData = await signInWithGoogle();
-      console.log("Logged in user:", userData);
+      await signInWithGoogle();
       toast.success("🎉 Login successful!", {
         style: {
           background: "#10b981",
