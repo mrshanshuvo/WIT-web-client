@@ -3,18 +3,18 @@ import RootLayout from "../layouts/RootLayout";
 import Home from "../pages/home/Home";
 import Register from "../pages/auth/Register";
 import SignIn from "../pages/auth/SignIn";
-import ItemDetails from "../pages/items/ItemDetails";
 import PrivateRoute from "./PrivateRoute";
 import NotFound from "../pages/Shared/NotFound";
 import LostFoundItems from "../pages/items/LostFoundItems";
 import AddItems from "../pages/items/AddItems";
 import MyProfile from "../pages/user/MyProfile";
 import MyItems from "../pages/user/MyItems";
-import UpdateItem from "../pages/user/UpdateItem";
 import MyRecoveredItems from "../pages/user/MyRecoveredItems";
 import RecoveredItems from "../pages/recovered-items/RecoveredItems";
 import Blog from "../pages/blog/Blog";
-import Contact from "../pages/contact/Contact";
+import Contact from "../pages/Contact/Contact";
+import ItemDetails from "../pages/Items/ItemDetails";
+import UpdateItem from "../pages/User/UpdateItem";
 
 const router = createBrowserRouter([
   {

@@ -17,6 +17,7 @@ import {
   FaCalendarCheck,
   FaHeart,
 } from "react-icons/fa";
+import { useNavigate } from "react-router";
 
 const steps = [
   {
@@ -67,13 +68,14 @@ const steps = [
 ];
 
 const stats = [
-  { number: "10,000+", label: "Items Recovered", icon: FaCheckCircle },
-  { number: "50,000+", label: "Happy Users", icon: FaUsers },
-  { number: "98%", label: "Success Rate", icon: FaShieldAlt },
+  { number: "1000+", label: "Items Recovered", icon: FaCheckCircle },
+  { number: "3000+", label: "Happy Users", icon: FaUsers },
+  { number: "91%", label: "Success Rate", icon: FaShieldAlt },
   { number: "24/7", label: "Active Support", icon: FaMobileAlt },
 ];
 
 const HowItWorks = () => {
+  const navigate = useNavigate();
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -108,7 +110,7 @@ const HowItWorks = () => {
   };
 
   return (
-    <section className="relative py-20 lg:py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-emerald-50 overflow-hidden">
+    <div className="relative py-16  px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-emerald-50 overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-80 h-80 bg-emerald-200 rounded-full blur-3xl animate-pulse"></div>
@@ -288,7 +290,10 @@ const HowItWorks = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <button className="group relative px-10 py-5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-2xl hover:shadow-2xl transition-all duration-300 hover:scale-105 overflow-hidden">
+            <button
+              onClick={() => navigate("/add-item")}
+              className="group relative px-10 py-5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-2xl hover:shadow-2xl transition-all duration-300 hover:scale-105 overflow-hidden"
+            >
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-700 to-teal-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative flex items-center gap-3">
                 <FaClipboardList className="text-lg" />
@@ -321,7 +326,7 @@ const HowItWorks = () => {
           </div>
         </motion.div>
       </div>
-    </section>
+    </div>
   );
 };
 

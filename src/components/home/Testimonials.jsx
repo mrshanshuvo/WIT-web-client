@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import {
@@ -8,87 +8,65 @@ import {
   FaUserCircle,
   FaHeart,
   FaMapMarkerAlt,
-  FaBox,
-  FaGraduationCap,
-  FaBriefcase,
-  FaCamera,
-  FaKey,
-  FaRing,
-  FaFileAlt,
   FaUsers,
   FaAward,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
-
-const testimonials = [
-  {
-    name: "Sarah Johnson",
-    role: "University Student",
-    story:
-      "I lost my wallet with all my IDs and credit cards at the university library. Thanks to WhereIsIt, a kind stranger found it and I got everything back within 24 hours! The notification system is incredibly efficient.",
-    avatar: "/images/user1.jpg",
-    rating: 5,
-    location: "New York, NY",
-    item: "Wallet with IDs",
-    icon: FaBox,
-  },
-  {
-    name: "Imran Hassan",
-    role: "Software Engineer",
-    story:
-      "Found my colleague's MacBook Pro in the office cafeteria. Used WhereIsIt to report it found, and within hours we were connected. The secure messaging made the handover process smooth and safe.",
-    avatar: "/images/user2.jpg",
-    rating: 5,
-    location: "San Francisco, CA",
-    item: "MacBook Pro",
-    icon: FaBriefcase,
-  },
-  {
-    name: "Nabila Rahman",
-    role: "Marketing Manager",
-    story:
-      "Lost my car keys at Central Park during my morning jog. The app notified me the same day when someone found them. The location tracking feature helped us meet up quickly. Amazing service!",
-    avatar: "/images/user3.jpg",
-    rating: 5,
-    location: "Chicago, IL",
-    item: "Car Keys",
-    icon: FaKey,
-  },
-  {
-    name: "Michael Chen",
-    role: "Photographer",
-    story:
-      "My camera bag with $3000 worth of equipment was left in a taxi. Thanks to WhereIsIt's broad community reach, a driver found it and contacted me through the platform. Lifesaver!",
-    avatar: "/images/user4.jpg",
-    rating: 5,
-    location: "Los Angeles, CA",
-    item: "Camera Equipment",
-    icon: FaCamera,
-  },
-  {
-    name: "Emily Rodriguez",
-    role: "Teacher",
-    story:
-      "A student found my wedding ring in the classroom and posted it on WhereIsIt. I had lost all hope after searching for weeks. This platform brought back something priceless to me.",
-    avatar: "/images/user5.jpg",
-    rating: 5,
-    location: "Miami, FL",
-    item: "Wedding Ring",
-    icon: FaRing,
-  },
-  {
-    name: "David Thompson",
-    role: "Business Owner",
-    story:
-      "Found an important business document folder in a coffee shop. Used the app to locate the owner, who happened to be my future business partner! WhereIsIt connects people in more ways than one.",
-    avatar: "/images/user6.jpg",
-    rating: 5,
-    location: "Austin, TX",
-    item: "Business Documents",
-    icon: FaFileAlt,
-  },
-];
+import testimonials from "./testimonials.json";
 
 const Testimonials = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const containerRef = useRef(null);
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying]);
+
+  const getVisibleTestimonials = () => {
+    const prev = (currentIndex - 1 + testimonials.length) % testimonials.length;
+    const next = (currentIndex + 1) % testimonials.length;
+    return [
+      { ...testimonials[prev], position: "left", index: prev },
+      {
+        ...testimonials[currentIndex],
+        position: "center",
+        index: currentIndex,
+      },
+      { ...testimonials[next], position: "right", index: next },
+    ];
+  };
+
+  const pauseThenResume = () => {
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 10000);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex(
+      (prev) => (prev - 1 + testimonials.length) % testimonials.length
+    );
+    pauseThenResume();
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    pauseThenResume();
+  };
+
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
+    pauseThenResume();
+  };
+
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, index) => (
       <span key={index} className="text-yellow-400">
@@ -97,35 +75,54 @@ const Testimonials = () => {
     ));
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
+  const visibleTestimonials = getVisibleTestimonials();
+
+  const cardVariants = {
+    left: {
+      x: "-50%",
+      scale: 0.9,
+      opacity: 0.5,
+      filter: "blur(1px)",
+      zIndex: 10,
       transition: {
-        staggerChildren: 0.15,
+        type: "spring",
+        stiffness: 120,
+        damping: 18,
       },
     },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
+    center: {
+      x: "0%",
+      scale: 1,
       opacity: 1,
-      y: 0,
+      filter: "blur(0px)",
+      zIndex: 20,
       transition: {
-        duration: 0.6,
-        ease: "easeOut",
+        type: "spring",
+        stiffness: 140,
+        damping: 20,
+      },
+    },
+    right: {
+      x: "50%",
+      scale: 0.9,
+      opacity: 0.5,
+      filter: "blur(1px)",
+      zIndex: 10,
+      transition: {
+        type: "spring",
+        stiffness: 120,
+        damping: 18,
       },
     },
   };
 
   return (
-    <section className="relative py-20 lg:py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-emerald-50 overflow-hidden">
+    <div className="relative py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-emerald-50 overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-20 right-10 w-80 h-80 bg-emerald-200 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-teal-200 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-300 rounded-full blur-3xl animate-pulse delay-500"></div>
+        <div className="absolute top-20 right-10 w-80 h-80 bg-emerald-200 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-teal-200 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-300 rounded-full blur-3xl animate-pulse delay-500" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -150,128 +147,183 @@ const Testimonials = () => {
           </p>
         </motion.div>
 
-        {/* Testimonials Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {testimonials.map((testimonial, index) => {
-            const ItemIcon = testimonial.icon;
-            return (
-              <motion.div key={index} variants={itemVariants} className="group">
-                <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-emerald-100 p-8 hover:shadow-2xl transition-all duration-500 group-hover:scale-105 h-full flex flex-col relative overflow-hidden">
-                  {/* Background Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-3xl"></div>
+        {/* Carousel Container */}
+        <div className="relative mb-16">
+          {/* Navigation Buttons */}
+          <button
+            onClick={handlePrev}
+            className="absolute left-0 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-full shadow-2xl border-2 border-emerald-200 flex items-center justify-center hover:bg-emerald-50 hover:scale-110 transition-all duration-300 group"
+            aria-label="Previous testimonial"
+          >
+            <FaChevronLeft className="text-emerald-600 text-xl group-hover:text-emerald-700" />
+          </button>
 
-                  {/* Quote Icon */}
-                  <div className="absolute top-8 right-8 text-emerald-100 group-hover:text-emerald-200 transition-colors duration-300">
-                    <FaQuoteLeft className="text-5xl" />
-                  </div>
+          <button
+            onClick={handleNext}
+            className="absolute right-0 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-full shadow-2xl border-2 border-emerald-200 flex items-center justify-center hover:bg-emerald-50 hover:scale-110 transition-all duration-300 group"
+            aria-label="Next testimonial"
+          >
+            <FaChevronRight className="text-emerald-600 text-xl group-hover:text-emerald-700" />
+          </button>
 
-                  {/* Rating */}
-                  <div className="flex items-center gap-1 mb-6">
-                    {renderStars(testimonial.rating)}
-                    <span className="text-sm text-gray-500 ml-2">5.0</span>
-                  </div>
+          {/* Cards Container */}
+          <div
+            ref={containerRef}
+            className="flex items-center justify-center gap-4 px-16 sm:px-20 py-8 min-h-[500px]"
+          >
+            {visibleTestimonials.map((testimonial) => {
+              const isCenter = testimonial.position === "center";
+              const isLeft = testimonial.position === "left";
+              // const isRight = testimonial.position === "right";
 
-                  {/* Testimonial Text */}
-                  <blockquote className="text-gray-700 mb-8 flex-grow text-base leading-relaxed">
-                    "{testimonial.story}"
-                  </blockquote>
+              return (
+                <motion.div
+                  key={`${testimonial.position}-${testimonial.index}`}
+                  variants={cardVariants}
+                  initial={testimonial.position}
+                  animate={testimonial.position}
+                  className={`absolute transform -translate-x-1/2 ${
+                    isCenter
+                      ? "w-full max-w-2xl z-20"
+                      : "w-full max-w-xl z-10 hidden lg:block"
+                  }`}
+                  style={{
+                    left: isLeft ? "25%" : isCenter ? "50%" : "75%",
+                    cursor: isCenter ? "default" : "pointer",
+                  }}
+                  onClick={() => {
+                    if (!isCenter) {
+                      isLeft ? handlePrev() : handleNext();
+                    }
+                  }}
+                >
+                  <div
+                    className={`bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-emerald-100 p-6 sm:p-8 relative overflow-hidden transition-all duration-300 ${
+                      isCenter ? "hover:shadow-2xl" : "hover:opacity-80"
+                    }`}
+                  >
+                    {/* Background Gradient */}
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-3xl transition-opacity duration-300 ${
+                        isCenter ? "opacity-5" : "opacity-0"
+                      }`}
+                    />
 
-                  {/* Item Badge */}
-                  <div className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-200 mb-6">
-                    <div className="p-2 bg-emerald-100 rounded-lg">
-                      <ItemIcon className="text-emerald-600" />
+                    {/* Quote Icon */}
+                    <div
+                      className={`absolute top-6 right-6 transition-all duration-300 ${
+                        isCenter ? "text-emerald-100" : "text-emerald-50"
+                      }`}
+                    >
+                      <FaQuoteLeft className="text-4xl sm:text-5xl" />
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-700">
-                        Recovered Item
-                      </p>
-                      <p className="text-emerald-600 font-bold">
-                        {testimonial.item}
-                      </p>
-                    </div>
-                  </div>
 
-                  {/* User Info */}
-                  <div className="flex items-center gap-4 pt-6 border-t border-emerald-100">
-                    <div className="flex-shrink-0 relative">
-                      {testimonial.avatar ? (
-                        <img
-                          src={testimonial.avatar}
-                          alt={testimonial.name}
-                          className="w-14 h-14 rounded-full object-cover border-2 border-emerald-200"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            e.target.nextSibling.style.display = "flex";
-                          }}
-                        />
-                      ) : null}
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-xl">
-                        {testimonial.name.charAt(0)}
+                    {/* Rating */}
+                    <div className="flex items-center gap-1 mb-4">
+                      {renderStars(testimonial.rating)}
+                      <span className="text-xs text-gray-500 ml-2">5.0</span>
+                    </div>
+
+                    {/* Testimonial Text */}
+                    <blockquote
+                      className={`text-gray-700 mb-6 relative z-10 leading-relaxed transition-all duration-300 ${
+                        isCenter
+                          ? "text-base sm:text-lg line-clamp-none"
+                          : "text-sm line-clamp-4"
+                      }`}
+                    >
+                      "{testimonial.story}"
+                    </blockquote>
+
+                    {/* Item Badge */}
+                    <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-200 mb-6">
+                      <div className="p-2 bg-emerald-100 rounded-lg">
+                        {/* Simple icon since JSON has no per-item icon */}
+                        <FaHeart className="text-emerald-600" />
                       </div>
-                      {/* Verified Badge */}
-                      <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center border-2 border-white">
-                        <FaStar className="text-white text-xs" />
+                      <div>
+                        <p className="text-xs font-medium text-gray-700">
+                          Recovered Item
+                        </p>
+                        <p
+                          className={`text-emerald-600 font-bold transition-all duration-300 ${
+                            isCenter ? "text-sm sm:text-base" : "text-xs"
+                          }`}
+                        >
+                          {testimonial.item}
+                        </p>
                       </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-gray-900 truncate">
-                        {testimonial.name}
-                      </h4>
-                      <p className="text-gray-600 text-sm truncate">
-                        {testimonial.role}
-                      </p>
-                      <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                        <FaMapMarkerAlt className="text-emerald-500" />
-                        <span>{testimonial.location}</span>
+
+                    {/* User Info */}
+                    <div className="flex items-center gap-4 pt-4 border-t border-emerald-100">
+                      <div className="flex-shrink-0 relative">
+                        <div
+                          className={`rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold transition-all duration-300 ${
+                            isCenter ? "w-14 h-14 text-xl" : "w-12 h-12 text-lg"
+                          }`}
+                        >
+                          {testimonial.name.charAt(0)}
+                        </div>
+                        <div
+                          className={`absolute -bottom-1 -right-1 bg-emerald-500 rounded-full flex items-center justify-center border-2 border-white transition-all duration-300 ${
+                            isCenter ? "w-6 h-6" : "w-5 h-5"
+                          }`}
+                        >
+                          <FaStar className="text-white text-xs" />
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4
+                          className={`font-bold text-gray-900 truncate transition-all duration-300 ${
+                            isCenter ? "text-base sm:text-lg" : "text-sm"
+                          }`}
+                        >
+                          {testimonial.name}
+                        </h4>
+                        <p
+                          className={`text-gray-600 truncate transition-all duration-300 ${
+                            isCenter ? "text-sm" : "text-xs"
+                          }`}
+                        >
+                          {testimonial.role}
+                        </p>
+                        <div
+                          className={`flex items-center gap-2 text-gray-500 mt-1 transition-all duration-300 ${
+                            isCenter ? "text-xs" : "text-xs opacity-70"
+                          }`}
+                        >
+                          <FaMapMarkerAlt className="text-emerald-500" />
+                          <span className="truncate">
+                            {testimonial.location}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-
-        {/* Stats Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-20 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-10 text-white overflow-hidden"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-4xl sm:text-5xl font-black mb-3">10K+</div>
-              <div className="text-emerald-100 font-medium flex items-center justify-center gap-2">
-                <FaUsers />
-                Success Stories
-              </div>
-            </div>
-            <div>
-              <div className="text-4xl sm:text-5xl font-black mb-3">98%</div>
-              <div className="text-emerald-100 font-medium flex items-center justify-center gap-2">
-                <FaHeart />
-                Satisfaction Rate
-              </div>
-            </div>
-            <div>
-              <div className="text-4xl sm:text-5xl font-black mb-3">50+</div>
-              <div className="text-emerald-100 font-medium flex items-center justify-center gap-2">
-                <FaMapMarkerAlt />
-                Cities Covered
-              </div>
-            </div>
+                </motion.div>
+              );
+            })}
           </div>
-        </motion.div>
 
-        {/* Rating Summary - Make it visually distinct */}
+          {/* Dots Navigation */}
+          <div className="flex justify-center gap-2 mt-6">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === currentIndex
+                    ? "bg-emerald-600 w-8"
+                    : "bg-emerald-200 hover:bg-emerald-300 w-2"
+                }`}
+                aria-label={`Go to testimonial ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Rating Summary */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -287,8 +339,8 @@ const Testimonials = () => {
             <div className="text-5xl font-black mb-2">
               4.9<span className="text-2xl text-white/80">/5</span>
             </div>
-            <div className="flex justify-center mb-2">
-              {renderStars(5, "text-2xl")}
+            <div className="flex justify-center mb-2 text-2xl gap-1">
+              {renderStars(5)}
             </div>
             <div className="text-white/90">Based on 2,847 verified reviews</div>
           </div>
@@ -353,7 +405,7 @@ const Testimonials = () => {
           </div>
         </motion.div>
       </div>
-    </section>
+    </div>
   );
 };
 

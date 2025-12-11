@@ -1,4 +1,14 @@
+import React from "react";
 import logo from "../../assets/logo.svg";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaInstagram,
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaPhoneAlt,
+} from "react-icons/fa";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -7,8 +17,8 @@ const Footer = () => {
     <footer className="bg-gradient-to-br from-gray-900 to-black text-gray-300 pt-16 pb-8 px-4 sm:px-6 md:px-8 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-10 left-1/4 w-64 h-64 bg-emerald-500 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 right-1/4 w-80 h-80 bg-teal-500 rounded-full blur-3xl"></div>
+        <div className="absolute top-10 left-1/4 w-64 h-64 bg-emerald-500 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 right-1/4 w-80 h-80 bg-teal-500 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
@@ -23,7 +33,7 @@ const Footer = () => {
                   alt="WhereIsIt Logo"
                   className="w-14 h-14 object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full opacity-10 group-hover:opacity-20 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full opacity-10 group-hover:opacity-20 transition-opacity duration-300" />
               </div>
               <div className="flex flex-col">
                 <span className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
@@ -43,7 +53,7 @@ const Footer = () => {
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-900/30 to-teal-900/30 flex items-center justify-center">
-                  <span className="text-emerald-400 text-lg">📍</span>
+                  <FaMapMarkerAlt className="text-emerald-400 text-lg" />
                 </div>
                 <div>
                   <p className="font-medium text-gray-300">Our Location</p>
@@ -55,7 +65,7 @@ const Footer = () => {
 
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-900/30 to-teal-900/30 flex items-center justify-center">
-                  <span className="text-emerald-400 text-lg">📧</span>
+                  <FaEnvelope className="text-emerald-400 text-lg" />
                 </div>
                 <div>
                   <p className="font-medium text-gray-300">Email Us</p>
@@ -65,7 +75,7 @@ const Footer = () => {
 
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-900/30 to-teal-900/30 flex items-center justify-center">
-                  <span className="text-emerald-400 text-lg">📞</span>
+                  <FaPhoneAlt className="text-emerald-400 text-lg" />
                 </div>
                 <div>
                   <p className="font-medium text-gray-300">Call Us</p>
@@ -94,7 +104,7 @@ const Footer = () => {
                     href={link.href}
                     className="group flex items-center text-gray-400 hover:text-emerald-300 transition-all duration-300"
                   >
-                    <span className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    <span className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <span className="group-hover:translate-x-2 transition-transform">
                       {link.text}
                     </span>
@@ -123,7 +133,7 @@ const Footer = () => {
                     href={link.href}
                     className="group flex items-center text-gray-400 hover:text-emerald-300 transition-all duration-300"
                   >
-                    <span className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    <span className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <span className="group-hover:translate-x-2 transition-transform">
                       {link.text}
                     </span>
@@ -152,7 +162,7 @@ const Footer = () => {
                     href={link.href}
                     className="group flex items-center text-gray-400 hover:text-emerald-300 transition-all duration-300"
                   >
-                    <span className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    <span className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <span className="group-hover:translate-x-2 transition-transform">
                       {link.text}
                     </span>
@@ -164,62 +174,68 @@ const Footer = () => {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-emerald-900/30 my-12"></div>
+        <div className="border-t border-emerald-900/30 my-10" />
 
         {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           {/* Social Media */}
-          <div className="flex items-center gap-6">
-            <div className="text-gray-400 font-medium">Connect with us:</div>
-            <div className="flex gap-4">
+          <div className="flex items-center gap-4">
+            <div className="text-gray-400 font-medium text-sm">
+              Connect with us:
+            </div>
+            <div className="flex gap-3">
               {[
-                { icon: "📘", label: "Facebook", color: "hover:text-blue-500" },
-                { icon: "🐦", label: "Twitter", color: "hover:text-blue-400" },
-                { icon: "💼", label: "LinkedIn", color: "hover:text-blue-600" },
                 {
-                  icon: "📸",
+                  icon: FaFacebookF,
+                  label: "Facebook",
+                  color: "hover:text-blue-500",
+                  href: "https://facebook.com",
+                },
+                {
+                  icon: FaTwitter,
+                  label: "Twitter",
+                  color: "hover:text-blue-400",
+                  href: "https://twitter.com",
+                },
+                {
+                  icon: FaLinkedinIn,
+                  label: "LinkedIn",
+                  color: "hover:text-blue-600",
+                  href: "https://linkedin.com",
+                },
+                {
+                  icon: FaInstagram,
                   label: "Instagram",
                   color: "hover:text-pink-500",
+                  href: "https://instagram.com",
                 },
-              ].map((social) => (
-                <a
-                  key={social.label}
-                  href="#"
-                  aria-label={social.label}
-                  className={`w-12 h-12 rounded-xl bg-gray-800/50 border border-emerald-900/30 flex items-center justify-center text-xl transition-all duration-300 hover:scale-110 hover:bg-gray-800/80 hover:border-emerald-900/50 ${social.color}`}
-                >
-                  {social.icon}
-                </a>
-              ))}
+              ].map((social) => {
+                const Icon = social.icon;
+                return (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    aria-label={social.label}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`w-10 h-10 rounded-xl bg-gray-800/50 border border-emerald-900/30 flex items-center justify-center text-lg transition-all duration-300 hover:scale-110 hover:bg-gray-800/80 hover:border-emerald-900/50 ${social.color}`}
+                  >
+                    <Icon />
+                  </a>
+                );
+              })}
             </div>
           </div>
 
-          {/* Newsletter */}
-          <div className="w-full md:w-auto">
-            <div className="bg-gradient-to-r from-gray-800/50 to-emerald-900/20 rounded-2xl p-6 border border-emerald-900/30">
-              <p className="font-bold text-white mb-3">Stay Updated</p>
-              <p className="text-sm text-gray-400 mb-4">
-                Subscribe to our newsletter for updates
-              </p>
-              <form className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="flex-1 px-4 py-3 bg-gray-900/50 border border-emerald-900/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 transition-all"
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300"
-                >
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </div>
+          {/* Simple tagline on the right (replaces newsletter visually) */}
+          <p className="text-sm text-gray-400 text-center md:text-right max-w-md">
+            Built for communities and organizations that care about getting
+            every lost item back where it belongs.
+          </p>
         </div>
 
         {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-emerald-900/30">
+        <div className="mt-10 pt-6 border-t border-emerald-900/30">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center">
             <p className="text-gray-500 text-sm">
               © {currentYear} WhereIsIt. All rights reserved.

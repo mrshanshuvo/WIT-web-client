@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Ayesha Karim",
+    "role": "University Student",
+    "story": "I lost my wallet with my NID and student ID at Dhaka University TSC. Thanks to WhereIsIt, a kind stranger reported it found and I got everything back the same evening. The alert system works amazingly well!",
+    "avatar": "/images/user1.jpg",
+    "rating": 5,
+    "location": "Dhaka, Bangladesh",
+    "item": "Wallet with NID & Student ID",
+    "category": "lost"
+  },
+  {
+    "name": "Imran Hossain",
+    "role": "Software Engineer",
+    "story": "My colleague forgot his laptop at our office cafeteria in Banani. I used WhereIsIt to report it found, and within an hour he contacted me. The secure chat made the handover smooth and safe.",
+    "avatar": "/images/user2.jpg",
+    "rating": 5,
+    "location": "Banani, Dhaka",
+    "item": "Laptop (MacBook Pro)",
+    "category": "found"
+  },
+  {
+    "name": "Nabila Rahman",
+    "role": "Marketing Manager",
+    "story": "I dropped my car keys at Hatirjheel during my morning walk. Someone found them and posted on WhereIsIt. The location pin helped us meet quickly. Truly a lifesaver!",
+    "avatar": "/images/user3.jpg",
+    "rating": 5,
+    "location": "Hatirjheel, Dhaka",
+    "item": "Car Keys",
+    "category": "lost"
+  },
+  {
+    "name": "Sajid Ahmed",
+    "role": "Photographer",
+    "story": "I left my camera bag in a ride-sharing car in Chattogram. Thanks to WhereIsIt's growing community, the driver found me through the app and returned everything safely. Couldn't be more grateful!",
+    "avatar": "/images/user4.jpg",
+    "rating": 5,
+    "location": "Chattogram, Bangladesh",
+    "item": "Camera Bag & Lenses",
+    "category": "lost"
+  },
+  {
+    "name": "Farhana Akter",
+    "role": "School Teacher",
+    "story": "One of my students found my gold ring in the classroom and posted it on WhereIsIt. I had almost given up hope after searching for days. This platform brought back something priceless.",
+    "avatar": "/images/user5.jpg",
+    "rating": 5,
+    "location": "Mirpur, Dhaka",
+    "item": "Gold Ring",
+    "category": "lost"
+  },
+  {
+    "name": "Mahmudul Hasan",
+    "role": "Business Owner",
+    "story": "I found an important business file at a café in Gulshan. Using the app, I quickly connected with the owner — who later became one of my business partners. WhereIsIt connects people in unexpected ways.",
+    "avatar": "/images/user6.jpg",
+    "rating": 5,
+    "location": "Gulshan, Dhaka",
+    "item": "Business Documents",
+    "category": "found"
+  }
+]

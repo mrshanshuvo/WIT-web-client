@@ -1,0 +1,50 @@
+[
+  {
+    "id": "report-lost",
+    "question": "How do I report a lost item?",
+    "answer": "Simply click on 'Report Lost Item' from your dashboard, fill in the item details including photos, description, location, and category. Your item will be instantly visible to our community of helpers.",
+    "category": "Reporting"
+  },
+  {
+    "id": "mark-found",
+    "question": "How can I mark an item as found?",
+    "answer": "Go to your dashboard, select the 'Found Items' section, and click 'Report Found Item'. Provide as much detail as possible to help identify the rightful owner quickly.",
+    "category": "Reporting"
+  },
+  {
+    "id": "contact-direct",
+    "question": "Can I contact the finder/owner directly?",
+    "answer": "Yes! Once a match is made, our secure messaging system allows you to communicate directly while protecting your personal information until you're ready to share contact details.",
+    "category": "Communication"
+  },
+  {
+    "id": "item-categories",
+    "question": "How are items categorized?",
+    "answer": "Items are organized into intuitive categories: Electronics, Documents, Jewelry, Clothing, Bags & Wallets, Keys, Books, and Other. This helps users quickly find what they're looking for.",
+    "category": "Organization"
+  },
+  {
+    "id": "personal-info-safe",
+    "question": "Is my personal information safe?",
+    "answer": "Absolutely. We use end-to-end encryption and never share your email or phone number publicly. Contact information is only shared with relevant parties after mutual agreement.",
+    "category": "Privacy"
+  },
+  {
+    "id": "match-notifications",
+    "question": "How quickly will I be notified of matches?",
+    "answer": "Our AI-powered matching system sends instant notifications when potential matches are found. Most users receive their first match within hours of posting.",
+    "category": "Notifications"
+  },
+  {
+    "id": "valuable-items",
+    "question": "What if my item is valuable or sensitive?",
+    "answer": "For valuable items, we recommend using our secure handoff locations and verification process. For sensitive documents, we have special protocols to ensure safe return.",
+    "category": "Safety"
+  },
+  {
+    "id": "service-fees",
+    "question": "Is there a fee for using WhereIsIt?",
+    "answer": "Basic services are completely free! We offer premium features like enhanced visibility and business solutions for a small fee, but reuniting lost items will always be free.",
+    "category": "Pricing"
+  }
+]

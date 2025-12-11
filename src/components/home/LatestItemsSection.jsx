@@ -6,10 +6,6 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import {
   FaClock,
-  FaChartBar,
-  FaTimes,
-  FaCheck,
-  FaSearch,
   FaExclamationTriangle,
   FaEnvelope,
   FaUsers,
@@ -151,7 +147,7 @@ const ItemCard = ({ item, onViewDetails }) => {
         <button
           onClick={() => onViewDetails(item._id)}
           aria-label={`View details of ${item.title}`}
-          className="group/btn relative w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden"
+          className="group/btn relative w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden cursor-pointer"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-700 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
           <span className="relative flex items-center justify-center gap-2">
@@ -187,9 +183,6 @@ const LatestItemsSection = () => {
   const handleViewDetails = (itemId) => navigate(`/inventory/${itemId}`);
   const handleSeeAll = () => navigate("/lost-found-items");
 
-  const lostCount = items.filter((item) => item.postType === "lost").length;
-  const foundCount = items.filter((item) => item.postType === "found").length;
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background decoration */}
@@ -214,41 +207,6 @@ const LatestItemsSection = () => {
             Discover the latest lost and found items in your community. Help
             reunite valuable belongings with their owners.
           </p>
-        </div>
-
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 text-center border border-emerald-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 flex items-center justify-center mx-auto mb-3">
-              <FaChartBar className="text-white text-2xl" />
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900">{items.length}</h3>
-            <p className="text-gray-600 font-medium">Total Items</p>
-          </div>
-
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 text-center border border-red-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center mx-auto mb-3">
-              <FaTimes className="text-white text-2xl" />
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900">{lostCount}</h3>
-            <p className="text-gray-600 font-medium">Lost Items</p>
-          </div>
-
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 text-center border border-emerald-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 flex items-center justify-center mx-auto mb-3">
-              <FaCheck className="text-white text-2xl" />
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900">{foundCount}</h3>
-            <p className="text-gray-600 font-medium">Found Items</p>
-          </div>
-
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 text-center border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-r from-gray-600 to-gray-700 flex items-center justify-center mx-auto mb-3">
-              <FaSearch className="text-white text-2xl" />
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900">6</h3>
-            <p className="text-gray-600 font-medium">Latest Shown</p>
-          </div>
         </div>
 
         {/* Items Grid */}
@@ -310,57 +268,42 @@ const LatestItemsSection = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="text-center">
-          <div className="relative inline-block">
-            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full blur-xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
+          {/* Button */}
+          <div className="relative">
+            <div
+              className="absolute -inset-4 bg-gradient-to-r from-emerald-500 to-teal-600 
+      rounded-full blur-xl opacity-30 group-hover:opacity-50 transition-opacity"
+            ></div>
+
             <button
               onClick={handleSeeAll}
-              className="group relative inline-flex items-center gap-4 px-12 py-5 bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-bold rounded-2xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              className="group relative inline-flex items-center gap-3 md:gap-4 
+      px-8 md:px-12 py-4 md:py-5 
+      bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-bold rounded-2xl 
+      hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer"
             >
-              <span className="text-lg">Browse All Lost & Found Items</span>
-              <span className="text-xl group-hover:translate-x-2 transition-transform">
+              <span className="text-base md:text-lg">
+                Browse All Lost & Found Items
+              </span>
+              <span className="text-lg md:text-xl group-hover:translate-x-2 transition-transform">
                 <FaArrowRight />
               </span>
             </button>
           </div>
 
           {/* Additional Info */}
-          <div className="mt-8 inline-flex items-center gap-4 px-6 py-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-full border border-emerald-200">
-            <span className="text-2xl">
+          <div
+            className="flex items-center gap-3 md:gap-4 
+    px-5 md:px-6 py-3 bg-gradient-to-r 
+    from-emerald-50 to-teal-50 rounded-full border border-emerald-200"
+          >
+            <span className="text-xl md:text-2xl">
               <FaUsers />
             </span>
-            <p className="text-gray-600 font-medium">
+            <p className="text-gray-600 font-medium text-sm md:text-base">
               Join thousands helping reunite lost items
             </p>
-          </div>
-        </div>
-
-        {/* Quick Stats Banner */}
-        <div className="mt-20 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 rounded-3xl p-8 border border-emerald-200/30 backdrop-blur-sm">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                Ready to Help?
-              </h3>
-              <p className="text-gray-600">
-                Every item posted brings us closer to reuniting someone with
-                their belongings.
-              </p>
-            </div>
-            <div className="flex gap-4">
-              <button
-                onClick={() => navigate("/add-item")}
-                className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl hover:shadow-lg transition-all duration-300"
-              >
-                Report Item
-              </button>
-              <button
-                onClick={() => navigate("/how-it-works")}
-                className="px-8 py-3 bg-white text-emerald-700 font-bold rounded-xl border-2 border-emerald-200 hover:bg-emerald-50 transition-all duration-300"
-              >
-                Learn More
-              </button>
-            </div>
           </div>
         </div>
       </div>
