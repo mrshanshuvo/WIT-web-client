@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { auth } from "../../firebase/firebase.config";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import ErrorMessage from "../../components/ErrorMessage";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import ErrorMessage from "../../components/error-message/ErrorMessage";
 import RecoveryModal from "../../components/RecoveryModal";
 import { axiosInstance } from "../../api/api";
 

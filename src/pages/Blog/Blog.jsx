@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import blogPostsData from "../Blog/blogPosts.json";
+import blogPostsData from "./blogPosts.json";
 import {
   FaCalendarAlt,
   FaUser,

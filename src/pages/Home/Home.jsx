@@ -1,12 +1,20 @@
 import React, { Suspense } from "react";
 import { ClipLoader } from "react-spinners";
-import BannerSlider from "./BannerSlider";
+import BannerSlider from "../../components/home/BannerSlider";
 
 // Lazy load sections
-const LatestItemsSection = React.lazy(() => import("./LatestItemsSection"));
-const HowItWorks = React.lazy(() => import("./HowItWorks"));
-const FAQSection = React.lazy(() => import("./FAQSection"));
-const Testimonials = React.lazy(() => import("./Testimonials"));
+const LatestItemsSection = React.lazy(() =>
+  import("../../components/home//LatestItemsSection")
+);
+const HowItWorks = React.lazy(() =>
+  import("../../components/home//HowItWorks")
+);
+const FAQSection = React.lazy(() =>
+  import("../../components/home//FAQSection")
+);
+const Testimonials = React.lazy(() =>
+  import("../../components/home//Testimonials")
+);
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 

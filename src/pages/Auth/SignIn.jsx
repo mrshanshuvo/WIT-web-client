@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 import { AuthContext } from "../../contexts/AuthContext/AuthContext";
-import SocialLogin from "../../components/SocialLogin";
+import SocialLogin from "../../components/social-login/SocialLogin";
 import {
   FaEnvelope,
   FaLock,

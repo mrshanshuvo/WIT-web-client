@@ -1,7 +1,7 @@
-import { useContext } from 'react';
-import { Navigate, useLocation } from 'react-router';
-import LoadingSpinner from '../components/LoadingSpinner';
-import { AuthContext } from '../contexts/AuthContext/AuthContext';
+import { useContext } from "react";
+import { Navigate, useLocation } from "react-router";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import { AuthContext } from "../contexts/AuthContext/AuthContext";
 
 const PrivateRoute = ({ children, adminOnly = false }) => {
   const { user, loading } = useContext(AuthContext);
@@ -15,7 +15,7 @@ const PrivateRoute = ({ children, adminOnly = false }) => {
     return <Navigate to="/sign-in" state={{ from: location }} replace />;
   }
 
-  if (adminOnly && user.role !== 'admin') {
+  if (adminOnly && user.role !== "admin") {
     return <Navigate to="/" replace />;
   }
 

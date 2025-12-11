@@ -1,20 +1,20 @@
 import { createBrowserRouter } from "react-router";
 import RootLayout from "../layouts/RootLayout";
-import Home from "../pages/Home/Home";
-import Register from "../pages/Auth/Register";
-import SignIn from "../pages/Auth/SignIn";
-import ItemDetails from "../pages/Items/ItemDetails";
+import Home from "../pages/home/Home";
+import Register from "../pages/auth/Register";
+import SignIn from "../pages/auth/SignIn";
+import ItemDetails from "../pages/items/ItemDetails";
 import PrivateRoute from "./PrivateRoute";
 import NotFound from "../pages/Shared/NotFound";
-import LostFoundItems from "../pages/Items/LostFoundItems";
-import AddItems from "../pages/Items/AddItems";
-import MyProfile from "../pages/User/MyProfile";
-import MyItems from "../pages/User/MyItems";
-import UpdateItem from "../pages/User/UpdateItem";
-import MyRecoveredItems from "../pages/User/MyRecoveredItems";
-import RecoveredItems from "../pages/RecoveredItems/RecoveredItems";
-import Blog from "../pages/Blog/Blog";
-import Contact from "../pages/Contact/Contact";
+import LostFoundItems from "../pages/items/LostFoundItems";
+import AddItems from "../pages/items/AddItems";
+import MyProfile from "../pages/user/MyProfile";
+import MyItems from "../pages/user/MyItems";
+import UpdateItem from "../pages/user/UpdateItem";
+import MyRecoveredItems from "../pages/user/MyRecoveredItems";
+import RecoveredItems from "../pages/recovered-items/RecoveredItems";
+import Blog from "../pages/blog/Blog";
+import Contact from "../pages/contact/Contact";
 
 const router = createBrowserRouter([
   {

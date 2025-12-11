@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext/AuthContext";
 import { useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";

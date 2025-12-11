@@ -1,8 +1,8 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router";
-import { AuthContext } from "../contexts/AuthContext/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext/AuthContext";
 import Swal from "sweetalert2";
-import logo from "../assets/logo.svg";
+import logo from "../../assets/logo.svg";
 
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
