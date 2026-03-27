@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import contactInfo from "./contactInfo.json";
+import { axiosInstance } from "../../api/api";
 import { toast } from "react-toastify";
 import {
   FaEnvelope,
@@ -28,7 +28,16 @@ const Contact = () => {
   const [support, setSupport] = useState({});
 
   useEffect(() => {
-    setSupport(contactInfo);
+    const fetchContact = async () => {
+      try {
+        const res = await axiosInstance.get("/contact-info");
+        setSupport(res.data || {});
+      } catch (err) {
+        console.error("Error fetching contact info:", err);
+      }
+    };
+
+    fetchContact();
   }, []);
 
   const handleChange = (e) => {
@@ -114,26 +123,6 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-8 sm:mb-10"
-        >
-          <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-3 rounded-xl shadow-md">
-              <FaHeadset className="text-white text-2xl" />
-            </div>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent mb-2">
-            Get in touch
-          </h1>
-          <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
-            Have questions or need assistance? Reach out through any of the
-            channels below.
-          </p>
-        </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Contact Form */}
@@ -318,47 +307,8 @@ const Contact = () => {
                 })}
               </div>
             </div>
-
-            {/* Additional Info */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.4 }}
-              className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-5 text-center text-white shadow-md"
-            >
-              <h3 className="text-base font-bold mb-1.5">
-                Quick response guaranteed
-              </h3>
-              <p className="text-emerald-100 text-xs sm:text-sm">
-                Most inquiries are answered within 2–4 business hours.
-              </p>
-            </motion.div>
           </motion.div>
         </div>
-
-        {/* FAQ/Support Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.4 }}
-          className="mt-10 text-center"
-        >
-          <h3 className="text-xl font-bold text-gray-800 mb-2">
-            Need immediate help?
-          </h3>
-          <p className="text-gray-600 mb-4 max-w-2xl mx-auto text-sm sm:text-base">
-            Visit the help center or browse the FAQ for quick answers to common
-            questions.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all duration-150 font-semibold shadow-md hover:shadow-lg text-sm">
-              Visit help center
-            </button>
-            <button className="px-6 py-2.5 border border-emerald-300 text-emerald-700 rounded-lg hover:border-emerald-400 hover:text-emerald-800 transition-all duration-150 font-semibold text-sm">
-              Browse FAQ
-            </button>
-          </div>
-        </motion.div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
 import {
   FaSearch,
@@ -17,9 +17,11 @@ import {
   FaCaretDown,
   FaCaretUp,
   FaTrophy,
+  FaListUl,
 } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../api/api";
+import { useActionMenu } from "../../hooks/useActionMenu";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -56,15 +58,15 @@ const ItemCard = ({ item, onViewDetails }) => {
   const getPostTypeConfig = (postType) =>
     postType.toLowerCase() === "found"
       ? {
-          color:
-            "bg-gradient-to-r from-emerald-100 to-emerald-50 text-emerald-800 border border-emerald-200",
-          icon: FaCheckCircle,
-        }
+        color:
+          "bg-gradient-to-r from-emerald-100 to-emerald-50 text-emerald-800 border border-emerald-200",
+        icon: FaCheckCircle,
+      }
       : {
-          color:
-            "bg-gradient-to-r from-red-100 to-red-50 text-red-800 border border-red-200",
-          icon: FaExclamationTriangle,
-        };
+        color:
+          "bg-gradient-to-r from-red-100 to-red-50 text-red-800 border border-red-200",
+        icon: FaExclamationTriangle,
+      };
 
   const postTypeConfig = getPostTypeConfig(item.postType);
   const PostTypeIcon = postTypeConfig.icon;
@@ -165,6 +167,50 @@ const ItemCard = ({ item, onViewDetails }) => {
           View recovery story
         </button>
       </div>
+    </div>
+  );
+};
+
+const CustomSelect = ({ value, options, onChange, name, disabled = false }) => {
+  const { isOpen, toggleMenu, closeMenu, menuRef } = useActionMenu();
+  const selectedOption = options.find((o) => o.value === value) || options[0];
+
+  return (
+    <div className="relative w-full" ref={menuRef}>
+      <button
+        type="button"
+        onClick={toggleMenu}
+        disabled={disabled}
+        className={`w-full px-3 py-2.5 text-left border rounded-lg text-sm bg-white/60 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 flex justify-between items-center ${
+          disabled ? "opacity-50 cursor-not-allowed border-gray-200" : "border-emerald-200 hover:border-emerald-300"
+        }`}
+      >
+        <span className="truncate pr-4">{selectedOption?.label}</span>
+        {isOpen ? <FaCaretUp className="text-emerald-600 flex-shrink-0" /> : <FaCaretDown className="text-gray-400 flex-shrink-0" />}
+      </button>
+
+      {isOpen && !disabled && (
+        <ul className="absolute z-[100] w-full mt-1.5 bg-white border border-emerald-100 rounded-xl shadow-2xl overflow-hidden text-sm max-h-60 overflow-y-auto">
+          {options.map((opt) => (
+            <li key={opt.value}>
+              <button
+                type="button"
+                onClick={() => {
+                  onChange({ target: { name, value: opt.value } });
+                  closeMenu();
+                }}
+                className={`w-full text-left px-4 py-3 transition-colors ${
+                  value === opt.value
+                    ? "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-800 font-bold border-l-2 border-emerald-500"
+                    : "text-gray-700 hover:bg-emerald-50 border-l-2 border-transparent"
+                }`}
+              >
+                {opt.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
@@ -300,33 +346,18 @@ const RecoveredItems = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-6 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-6 px-4 sm:px-6 lg:px-8 relative">
       {/* Background Decorations */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-16 left-10 w-52 h-52 bg-emerald-200 rounded-full blur-3xl" />
         <div className="absolute bottom-16 right-10 w-64 h-64 bg-teal-200 rounded-full blur-3xl" />
       </div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-full mb-3 border border-emerald-200">
-            <FaTrophy className="text-emerald-600 text-base" />
-            <span className="font-semibold text-emerald-800 text-sm">
-              Recovered Items
-            </span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent mb-2">
-            Success stories
-          </h1>
-          <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Browse items that have been successfully reunited with their owners.
-          </p>
-        </div>
-
-        {/* Search + Filters */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 p-5 mb-6">
-          {/* Search Bar */}
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 relative z-10 items-start">
+        {/* Sticky Sidebar */}
+        <div className="w-full lg:w-1/4 lg:sticky lg:top-8 flex-shrink-0 z-20">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 p-4 sm:p-5">
+            {/* Search Bar */}
           <div className="relative mb-4 group">
             <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm group-hover:text-emerald-500 transition-colors duration-200" />
             <input
@@ -364,29 +395,34 @@ const RecoveredItems = () => {
               <span>Filter recovered items</span>
             </div>
 
-            {/* Sort By */}
-            <div className="flex items-center gap-2 text-sm">
-              <label className="text-gray-600 font-medium">Sort by:</label>
-              <select
-                name="sortBy"
-                value={filters.sortBy}
-                onChange={handleFilterChange}
-                className="px-3 py-2 border border-emerald-200 rounded-lg bg-white/60 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200"
-              >
-                <option value="newest">Newest first</option>
-                <option value="oldest">Oldest first</option>
-                <option value="title">Title A–Z</option>
-              </select>
-            </div>
           </div>
 
-          {/* Filters */}
+          {/* Filter Section */}
           <div
-            className={`${
-              showFilters ? "block" : "hidden"
-            } lg:block transition-all duration-200`}
+            className={`${showFilters ? "block" : "hidden"
+              } lg:block transition-all duration-200`}
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div className="flex flex-col gap-4 mb-4">
+              {/* Sort By */}
+              <div>
+                <label className="block mb-2 text-sm font-semibold text-gray-700">
+                  <span className="inline-flex items-center gap-2">
+                    <FaListUl className="text-emerald-600" />
+                    Sort by
+                  </span>
+                </label>
+                <CustomSelect
+                  name="sortBy"
+                  value={filters.sortBy}
+                  onChange={handleFilterChange}
+                  options={[
+                    { value: "newest", label: "Newest first" },
+                    { value: "oldest", label: "Oldest first" },
+                    { value: "title", label: "Title A–Z" }
+                  ]}
+                />
+              </div>
+
               <div>
                 <label className="block mb-2 text-sm font-semibold text-gray-700">
                   <span className="inline-flex items-center gap-2">
@@ -394,16 +430,16 @@ const RecoveredItems = () => {
                     Item type
                   </span>
                 </label>
-                <select
+                <CustomSelect
                   name="postType"
                   value={filters.postType}
                   onChange={handleFilterChange}
-                  className="w-full px-3 py-2.5 border border-emerald-200 rounded-lg text-sm bg-white/60 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200"
-                >
-                  <option value="all">All types</option>
-                  <option value="lost">Lost items</option>
-                  <option value="found">Found items</option>
-                </select>
+                  options={[
+                    { value: "all", label: "All types" },
+                    { value: "lost", label: "Lost items" },
+                    { value: "found", label: "Found items" }
+                  ]}
+                />
               </div>
 
               <div>
@@ -413,20 +449,16 @@ const RecoveredItems = () => {
                     Category
                   </span>
                 </label>
-                <select
+                <CustomSelect
                   name="category"
                   value={filters.category}
                   onChange={handleFilterChange}
-                  className="w-full px-3 py-2.5 border border-emerald-200 rounded-lg text-sm bg-white/60 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200"
                   disabled={categories.length === 0}
-                >
-                  <option value="all">All categories</option>
-                  {categories.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
+                  options={[
+                    { value: "all", label: "All categories" },
+                    ...categories.map(c => ({ value: c, label: c }))
+                  ]}
+                />
               </div>
 
               <div>
@@ -436,20 +468,16 @@ const RecoveredItems = () => {
                     Location
                   </span>
                 </label>
-                <select
+                <CustomSelect
                   name="location"
                   value={filters.location}
                   onChange={handleFilterChange}
-                  className="w-full px-3 py-2.5 border border-emerald-200 rounded-lg text-sm bg-white/60 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200"
                   disabled={locations.length === 0}
-                >
-                  <option value="all">All locations</option>
-                  {locations.map((l) => (
-                    <option key={l} value={l}>
-                      {l}
-                    </option>
-                  ))}
-                </select>
+                  options={[
+                    { value: "all", label: "All locations" },
+                    ...locations.map(l => ({ value: l, label: l }))
+                  ]}
+                />
               </div>
 
               <div>
@@ -497,8 +525,11 @@ const RecoveredItems = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Results */}
+      {/* Content Area */}
+        <div className="w-full lg:w-3/4 flex-1">
+          {/* Results */}
         {isError ? (
           <div className="bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-2xl p-8 text-center backdrop-blur-sm">
             <FaExclamationTriangle className="text-red-500 text-4xl mx-auto mb-4" />
@@ -552,15 +583,15 @@ const RecoveredItems = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-6">
               {isLoading
                 ? Array.from({ length: itemsPerPage }).map((_, idx) => (
-                    <ItemCardSkeleton key={idx} />
-                  ))
+                  <ItemCardSkeleton key={idx} />
+                ))
                 : currentItems.map((item) => (
-                    <ItemCard
-                      key={item._id}
-                      item={item}
-                      onViewDetails={handleViewDetails}
-                    />
-                  ))}
+                  <ItemCard
+                    key={item._id}
+                    item={item}
+                    onViewDetails={handleViewDetails}
+                  />
+                ))}
             </div>
 
             {/* Pagination */}
@@ -587,11 +618,10 @@ const RecoveredItems = () => {
                       <button
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
-                        className={`px-3 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                          currentPage === pageNum
+                        className={`px-3 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200 ${currentPage === pageNum
                             ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md"
                             : "text-gray-700 hover:bg-emerald-50"
-                        }`}
+                          }`}
                       >
                         {pageNum}
                       </button>
@@ -630,6 +660,7 @@ const RecoveredItems = () => {
             </div>
           </>
         )}
+        </div>
       </div>
     </div>
   );

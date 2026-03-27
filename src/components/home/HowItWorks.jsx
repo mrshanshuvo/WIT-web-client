@@ -18,6 +18,8 @@ import {
   FaHeart,
 } from "react-icons/fa";
 import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { axiosInstance } from "../../api/api";
 
 const steps = [
   {
@@ -76,16 +78,25 @@ const steps = [
   },
 ];
 
-const stats = [
-  { number: "1000+", label: "Items Recovered", icon: FaCheckCircle },
-  { number: "3000+", label: "Happy Users", icon: FaUsers },
-  { number: "91%", label: "Success Rate", icon: FaShieldAlt },
-  { number: "24/7", label: "Active Support", icon: FaMobileAlt },
-];
-
 const HowItWorks = () => {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(null);
+
+  const { data: statsData } = useQuery({
+    queryKey: ["app-stats"],
+    queryFn: async () => {
+      const res = await axiosInstance.get("/stats");
+      return res.data;
+    },
+    staleTime: 1000 * 60 * 60,
+  });
+
+  const displayStats = [
+    { number: statsData?.itemsRecovered || "0", label: "Items Recovered", icon: FaCheckCircle },
+    { number: statsData?.usersCount || "0", label: "Total Users", icon: FaUsers },
+    { number: statsData ? `${statsData.successRate}%` : "0%", label: "Success Rate", icon: FaShieldAlt },
+    { number: "24/7", label: "Active Support", icon: FaMobileAlt },
+  ];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -224,7 +235,7 @@ const HowItWorks = () => {
           <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
             {/* Stats */}
             <div className="grid grid-cols-2 gap-4 flex-1">
-              {stats.map((stat, index) => {
+              {displayStats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
                   <motion.div

@@ -15,7 +15,9 @@ import {
   FaDollarSign,
   FaCog,
 } from "react-icons/fa";
-import faqsData from "./faqs.json";
+import { useQuery } from "@tanstack/react-query";
+import { axiosInstance } from "../../api/api";
+import { ClipLoader } from "react-spinners";
 
 const iconMap = {
   Reporting: FaClipboardList,
@@ -29,6 +31,18 @@ const iconMap = {
 
 const FAQSection = () => {
   const [openId, setOpenId] = useState(null);
+
+  const {
+    data: faqsData = [],
+    isLoading,
+  } = useQuery({
+    queryKey: ["faqs"],
+    queryFn: async () => {
+      const res = await axiosInstance.get("/faqs");
+      return res.data;
+    },
+    staleTime: 1000 * 60 * 10, // 10 minutes cache
+  });
 
   const handleToggle = useCallback((id) => {
     setOpenId((prev) => (prev === id ? null : id));
@@ -90,7 +104,12 @@ const FAQSection = () => {
           viewport={{ once: true, margin: "-40px" }}
           className="space-y-3"
         >
-          {faqsData.map((faq) => {
+          {isLoading ? (
+            <div className="flex justify-center items-center h-32">
+              <ClipLoader size={40} color="#10b981" />
+            </div>
+          ) : (
+            faqsData.map((faq) => {
             const Icon = iconMap[faq.category] || FaLightbulb;
             const isOpen = openId === faq.id;
 
@@ -162,7 +181,7 @@ const FAQSection = () => {
                 </AnimatePresence>
               </motion.div>
             );
-          })}
+          }))}
         </motion.div>
 
         {/* Support CTA (compact) */}

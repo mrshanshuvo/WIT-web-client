@@ -13,23 +13,69 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
-import testimonials from "./testimonials.json";
+import { useQuery } from "@tanstack/react-query";
+import { axiosInstance } from "../../api/api";
+import { ClipLoader } from "react-spinners";
 
 const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const containerRef = useRef(null);
 
+  const {
+    data: fetchedTestimonials = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["testimonials"],
+    queryFn: async () => {
+      const res = await axiosInstance.get("/inventory?status=recovered");
+      const items = res.data.slice(0, 6); // get up to 6 recovered items
+      return items.map((item) => ({
+        id: item._id,
+        name: item.contactName || "Happy User",
+        role: "Community Member",
+        location: item.location,
+        rating: 5,
+        item: item.title,
+        story:
+          item.description?.length > 20
+            ? `I was so worried until this was found! ${item.description}`
+            : "I am incredibly grateful to this platform and the honest person who helped me recover my item. The community here is just amazing!",
+      }));
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const testimonials = fetchedTestimonials.length ? fetchedTestimonials : [
+    {
+      id: "dummy1",
+      name: "Community Member",
+      role: "User",
+      location: "Local Area",
+      rating: 5,
+      item: "Valuable Item",
+      story: "This platform is amazing for reuniting lost items!"
+    }
+  ];
+
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || testimonials.length <= 1) return;
     const interval = setInterval(
       () => setCurrentIndex((prev) => (prev + 1) % testimonials.length),
       5000
     );
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, testimonials.length]);
 
   const getVisibleTestimonials = () => {
+    if (testimonials.length === 0) return [];
+    
+    // If only one testimonial, just show it in center
+    if (testimonials.length === 1) {
+      return [{ ...testimonials[0], position: "center", index: 0 }];
+    }
+    
     const prev = (currentIndex - 1 + testimonials.length) % testimonials.length;
     const next = (currentIndex + 1) % testimonials.length;
     return [
@@ -142,10 +188,19 @@ const Testimonials = () => {
           </button>
 
           {/* Cards Container */}
-          <div
-            ref={containerRef}
-            className="flex items-center justify-center px-10 sm:px-16 py-6 relative h-[320px] sm:h-[360px]"
-          >
+          {isLoading ? (
+            <div className="flex items-center justify-center h-[320px] sm:h-[360px]">
+              <ClipLoader size={40} color="#10b981" />
+            </div>
+          ) : isError ? (
+            <div className="flex items-center justify-center h-[320px] sm:h-[360px] text-gray-500">
+              Failed to load success stories.
+            </div>
+          ) : (
+            <div
+              ref={containerRef}
+              className="flex items-center justify-center px-10 sm:px-16 py-6 relative h-[320px] sm:h-[360px]"
+            >
             {visibleTestimonials.map((testimonial) => {
               const isCenter = testimonial.position === "center";
               const isLeft = testimonial.position === "left";
@@ -235,6 +290,7 @@ const Testimonials = () => {
               );
             })}
           </div>
+          )}
 
           {/* Dots + small rating summary */}
           <div className="flex flex-col items-center gap-2 mt-2">

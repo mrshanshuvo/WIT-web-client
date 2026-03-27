@@ -1,14 +1,27 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router";
 import { AuthContext } from "../../contexts/AuthContext/AuthContext";
 import Swal from "sweetalert2";
 import logo from "../../assets/logo.svg";
 
+import { useActionMenu } from "../../hooks/useActionMenu";
+
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const profileRef = useRef(null);
+
+  const {
+    isOpen: isMobileMenuOpen,
+    toggleMenu: toggleMobileMenu,
+    closeMenu: closeMobileMenu,
+    menuRef: mobileMenuRef,
+  } = useActionMenu();
+
+  const {
+    isOpen: isProfileMenuOpen,
+    toggleMenu: toggleProfileMenu,
+    closeMenu: closeProfileMenu,
+    menuRef: profileMenuRef,
+  } = useActionMenu();
 
   const handleSignOut = () => {
     signOutUser()
@@ -24,21 +37,10 @@ const Navbar = () => {
       .catch(console.error);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
-        setProfileDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   const linkClass = ({ isActive }) =>
-    `px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-      isActive
-        ? "text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-md scale-[1.02]"
-        : "text-gray-700 hover:bg-emerald-50 hover:text-emerald-700"
+    `px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${isActive
+      ? "text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-md scale-[1.02]"
+      : "text-gray-700 hover:bg-emerald-50 hover:text-emerald-700"
     }`;
 
   const links = (
@@ -46,7 +48,7 @@ const Navbar = () => {
       <li>
         <NavLink
           to="/"
-          onClick={() => setDropdownOpen(false)}
+          onClick={closeMobileMenu}
           className={linkClass}
         >
           Home
@@ -55,7 +57,7 @@ const Navbar = () => {
       <li>
         <NavLink
           to="/lost-found-items"
-          onClick={() => setDropdownOpen(false)}
+          onClick={closeMobileMenu}
           className={linkClass}
         >
           Lost &amp; Found
@@ -65,7 +67,7 @@ const Navbar = () => {
         <li>
           <NavLink
             to="/add-item"
-            onClick={() => setDropdownOpen(false)}
+            onClick={closeMobileMenu}
             className={linkClass}
           >
             Add Item
@@ -75,7 +77,7 @@ const Navbar = () => {
       <li>
         <NavLink
           to="/recovered-items"
-          onClick={() => setDropdownOpen(false)}
+          onClick={closeMobileMenu}
           className={linkClass}
         >
           Recovered
@@ -84,7 +86,7 @@ const Navbar = () => {
       <li>
         <NavLink
           to="/blog"
-          onClick={() => setDropdownOpen(false)}
+          onClick={closeMobileMenu}
           className={linkClass}
         >
           Blog
@@ -93,7 +95,7 @@ const Navbar = () => {
       <li>
         <NavLink
           to="/contact"
-          onClick={() => setDropdownOpen(false)}
+          onClick={closeMobileMenu}
           className={linkClass}
         >
           Contact
@@ -103,13 +105,13 @@ const Navbar = () => {
   );
 
   return (
-    <div className="navbar min-h-0 h-16 sm:h-18 bg-gradient-to-r from-gray-50 to-white shadow-sm backdrop-blur-sm border-b border-emerald-100 sticky top-0 z-50 px-3 sm:px-5 md:px-8">
+    <div className="navbar min-h-0 h-16 sm:h-18 bg-gradient-to-r from-gray-50 to-white shadow-sm backdrop-blur-sm border-b border-emerald-100 top-0 z-50 px-3 sm:px-5 md:px-8">
       {/* Start Section */}
       <div className="navbar-start flex items-center gap-3">
         {/* Mobile menu */}
-        <div className="dropdown lg:hidden">
+        <div className="dropdown lg:hidden" ref={mobileMenuRef}>
           <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
+            onClick={toggleMobileMenu}
             className="btn btn-ghost p-2 hover:bg-emerald-50 rounded-xl transition-all duration-200"
             aria-label="Toggle menu"
           >
@@ -120,9 +122,8 @@ const Navbar = () => {
             </div>
           </button>
           <ul
-            className={`menu menu-sm dropdown-content mt-3 p-3 shadow-xl bg-white rounded-2xl w-64 space-y-1.5 ${
-              dropdownOpen ? "block" : "hidden"
-            }`}
+            className={`menu menu-sm dropdown-content mt-3 p-3 shadow-xl bg-white rounded-2xl w-64 space-y-1.5 ${isMobileMenuOpen ? "block" : "hidden"
+              }`}
           >
             {links}
           </ul>
@@ -162,9 +163,9 @@ const Navbar = () => {
       {/* End Section */}
       <div className="navbar-end flex items-center gap-3">
         {user ? (
-          <div className="relative" ref={profileRef}>
+          <div className="relative" ref={profileMenuRef}>
             <button
-              onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+              onClick={toggleProfileMenu}
               className="flex items-center gap-2 p-1.5 hover:bg-emerald-50 rounded-2xl transition-all duration-200 group"
             >
               <div className="flex flex-col items-end max-w-[160px]">
@@ -195,7 +196,7 @@ const Navbar = () => {
               </div>
             </button>
 
-            {profileDropdownOpen && (
+            {isProfileMenuOpen && (
               <ul className="absolute right-0 mt-2 z-20 w-64 bg-white p-3 shadow-2xl rounded-2xl border border-emerald-100 backdrop-blur-sm text-sm">
                 <li className="px-3 py-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl mb-2 border border-emerald-100">
                   <div className="font-bold text-gray-900 truncate">
@@ -209,7 +210,7 @@ const Navbar = () => {
                   <li>
                     <NavLink
                       to="/my-profile"
-                      onClick={() => setProfileDropdownOpen(false)}
+                      onClick={closeProfileMenu}
                       className="block px-3 py-2.5 rounded-lg hover:bg-emerald-50 hover:text-emerald-700 transition-all font-medium"
                     >
                       My Profile
@@ -218,7 +219,7 @@ const Navbar = () => {
                   <li>
                     <NavLink
                       to="/my-recovered-items"
-                      onClick={() => setProfileDropdownOpen(false)}
+                      onClick={closeProfileMenu}
                       className="block px-3 py-2.5 rounded-lg hover:bg-emerald-50 hover:text-emerald-700 transition-all font-medium"
                     >
                       My Recovered Items
@@ -227,7 +228,7 @@ const Navbar = () => {
                   <li>
                     <NavLink
                       to="/my-items"
-                      onClick={() => setProfileDropdownOpen(false)}
+                      onClick={closeProfileMenu}
                       className="block px-3 py-2.5 rounded-lg hover:bg-emerald-50 hover:text-emerald-700 transition-all font-medium"
                     >
                       Manage My Items
@@ -237,7 +238,7 @@ const Navbar = () => {
                 <li className="pt-2 mt-2 border-t border-emerald-100">
                   <button
                     onClick={() => {
-                      setProfileDropdownOpen(false);
+                      closeProfileMenu();
                       handleSignOut();
                     }}
                     className="w-full px-3 py-2.5 bg-gradient-to-r from-red-400 to-red-500 text-white text-sm font-bold rounded-lg hover:shadow-md hover:scale-[1.01] transition-all duration-200"

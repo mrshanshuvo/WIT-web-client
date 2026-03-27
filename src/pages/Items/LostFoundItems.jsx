@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   FaSearch,
@@ -20,6 +20,7 @@ import {
 } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../api/api";
+import { useActionMenu } from "../../hooks/useActionMenu";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -52,15 +53,15 @@ const ItemCard = ({ item, onViewDetails }) => {
   const getPostTypeConfig = (postType) =>
     postType.toLowerCase() === "found"
       ? {
-          color:
-            "bg-gradient-to-r from-emerald-100 to-emerald-50 text-emerald-800 border border-emerald-200",
-          icon: FaEye,
-        }
+        color:
+          "bg-gradient-to-r from-emerald-100 to-emerald-50 text-emerald-800 border border-emerald-200",
+        icon: FaEye,
+      }
       : {
-          color:
-            "bg-gradient-to-r from-red-100 to-red-50 text-red-800 border border-red-200",
-          icon: FaExclamationTriangle,
-        };
+        color:
+          "bg-gradient-to-r from-red-100 to-red-50 text-red-800 border border-red-200",
+        icon: FaExclamationTriangle,
+      };
 
   const postTypeConfig = getPostTypeConfig(item.postType);
   const PostTypeIcon = postTypeConfig.icon;
@@ -137,6 +138,48 @@ const ItemCard = ({ item, onViewDetails }) => {
           View Details
         </button>
       </div>
+    </div>
+  );
+};
+
+const CustomSelect = ({ value, options, onChange, name, disabled = false }) => {
+  const { isOpen, toggleMenu, closeMenu, menuRef } = useActionMenu();
+  const selectedOption = options.find((o) => o.value === value) || options[0];
+
+  return (
+    <div className="relative w-full" ref={menuRef}>
+      <button
+        type="button"
+        onClick={toggleMenu}
+        disabled={disabled}
+        className={`w-full px-3 py-2.5 text-left border rounded-lg text-sm bg-white/60 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 flex justify-between items-center ${disabled ? "opacity-50 cursor-not-allowed border-gray-200" : "border-emerald-200 hover:border-emerald-300"
+          }`}
+      >
+        <span className="truncate pr-4">{selectedOption?.label}</span>
+        {isOpen ? <FaCaretUp className="text-emerald-600 flex-shrink-0" /> : <FaCaretDown className="text-gray-400 flex-shrink-0" />}
+      </button>
+
+      {isOpen && !disabled && (
+        <ul className="absolute z-[100] w-full mt-1.5 bg-white border border-emerald-100 rounded-xl shadow-2xl overflow-hidden text-sm max-h-60 overflow-y-auto">
+          {options.map((opt) => (
+            <li key={opt.value}>
+              <button
+                type="button"
+                onClick={() => {
+                  onChange({ target: { name, value: opt.value } });
+                  closeMenu();
+                }}
+                className={`w-full text-left px-4 py-3 transition-colors ${value === opt.value
+                  ? "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-800 font-bold border-l-2 border-emerald-500"
+                  : "text-gray-700 hover:bg-emerald-50 border-l-2 border-transparent"
+                  }`}
+              >
+                {opt.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
@@ -273,306 +316,289 @@ const LostFoundItems = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-6 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-6 px-4 sm:px-6 lg:px-8 relative">
       {/* Background Decorations (smaller) */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
+      <div className="absolute inset-0 opacity-5 pointer-events-none overflow-hidden">
         <div className="absolute top-16 left-10 w-52 h-52 bg-emerald-200 rounded-full blur-3xl" />
         <div className="absolute bottom-16 right-10 w-64 h-64 bg-teal-200 rounded-full blur-3xl" />
       </div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-full mb-3 border border-emerald-200">
-            <FaListUl className="text-emerald-600 text-base" />
-            <span className="font-semibold text-emerald-800 text-sm">
-              Lost &amp; Found Items
-            </span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent mb-2">
-            Browse Community Items
-          </h1>
-          <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Discover lost and found items near you and help reunite them with
-            their owners.
-          </p>
-        </div>
+      <div className="max-w-7xl mx-auto relative z-10 flex flex-col lg:flex-row gap-6 items-start">
 
-        {/* Search + Filters */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 p-4 sm:p-5 mb-6">
-          {/* Search Bar */}
-          <div className="relative mb-4 group">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm group-hover:text-emerald-500 transition-colors duration-200" />
-            <input
-              type="text"
-              placeholder="Search items by title or description..."
-              className="w-full pl-11 pr-9 py-3 border border-emerald-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/60 text-sm text-gray-800 placeholder-gray-500"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-            {searchTerm && (
+        {/* Sidebar: Search + Filters */}
+        <div className="w-full lg:w-1/4 lg:sticky lg:top-8 flex-shrink-0 z-20">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 p-4 sm:p-5">
+            {/* Search Bar */}
+            <div className="relative mb-4 group">
+              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm group-hover:text-emerald-500 transition-colors duration-200" />
+              <input
+                type="text"
+                placeholder="Search items by title or description..."
+                className="w-full pl-11 pr-9 py-3 border border-emerald-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 bg-white/60 text-sm text-gray-800 placeholder-gray-500"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-500 transition-colors"
+                >
+                  <FaTimes />
+                </button>
+              )}
+            </div>
+
+            {/* Filter Header */}
+            <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
               <button
-                onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-500 transition-colors"
+                onClick={() => setShowFilters(!showFilters)}
+                className="lg:hidden flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 text-sm font-semibold rounded-lg hover:shadow-md transition-all duration-200"
               >
-                <FaTimes />
+                <FaFilter className="text-sm" />
+                <span>
+                  Filters{activeFiltersCount > 0 && ` (${activeFiltersCount})`}
+                </span>
+                {showFilters ? <FaCaretUp /> : <FaCaretDown />}
               </button>
-            )}
-          </div>
 
-          {/* Filter Header */}
-          <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="lg:hidden flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 text-sm font-semibold rounded-lg hover:shadow-md transition-all duration-200"
+              <div className="hidden lg:flex items-center gap-2 text-sm font-semibold text-gray-900">
+                <FaFilter className="text-emerald-600" />
+                <span>Filter items</span>
+              </div>
+
+            </div>
+
+            {/* Filter Section */}
+            <div
+              className={`${showFilters ? "block" : "hidden"
+                } lg:block transition-all duration-200`}
             >
-              <FaFilter className="text-sm" />
-              <span>
-                Filters{activeFiltersCount > 0 && ` (${activeFiltersCount})`}
-              </span>
-              {showFilters ? <FaCaretUp /> : <FaCaretDown />}
-            </button>
+              <div className="flex flex-col gap-4 mb-4">
+                {/* Sort By */}
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-gray-700">
+                    <span className="inline-flex items-center gap-2">
+                      <FaListUl className="text-emerald-600" />
+                      Sort by
+                    </span>
+                  </label>
+                  <CustomSelect
+                    name="sortBy"
+                    value={filters.sortBy}
+                    onChange={handleFilterChange}
+                    options={[
+                      { value: "newest", label: "Newest first" },
+                      { value: "oldest", label: "Oldest first" },
+                      { value: "title", label: "Title A–Z" }
+                    ]}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-gray-700">
+                    <span className="inline-flex items-center gap-2">
+                      <FaTag className="text-emerald-600" />
+                      Item Type
+                    </span>
+                  </label>
+                  <CustomSelect
+                    name="postType"
+                    value={filters.postType}
+                    onChange={handleFilterChange}
+                    options={[
+                      { value: "all", label: "All types" },
+                      { value: "lost", label: "Lost items" },
+                      { value: "found", label: "Found items" }
+                    ]}
+                  />
+                </div>
 
-            <div className="hidden lg:flex items-center gap-2 text-sm font-semibold text-gray-900">
-              <FaFilter className="text-emerald-600" />
-              <span>Filter items</span>
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-gray-700">
+                    <span className="inline-flex items-center gap-2">
+                      <FaTag className="text-emerald-600" />
+                      Category
+                    </span>
+                  </label>
+                  <CustomSelect
+                    name="category"
+                    value={filters.category}
+                    onChange={handleFilterChange}
+                    disabled={categories.length === 0}
+                    options={[
+                      { value: "all", label: "All categories" },
+                      ...categories.map(c => ({ value: c, label: c }))
+                    ]}
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-gray-700">
+                    <span className="inline-flex items-center gap-2">
+                      <FaMapMarkerAlt className="text-emerald-600" />
+                      Location
+                    </span>
+                  </label>
+                  <CustomSelect
+                    name="location"
+                    value={filters.location}
+                    onChange={handleFilterChange}
+                    disabled={locations.length === 0}
+                    options={[
+                      { value: "all", label: "All locations" },
+                      ...locations.map(l => ({ value: l, label: l }))
+                    ]}
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-gray-700">
+                    <span className="inline-flex items-center gap-2">
+                      <FaHome className="text-emerald-600" />
+                      Actions
+                    </span>
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={resetFilters}
+                      className="flex-1 px-3 py-2.5 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 text-sm font-semibold rounded-lg hover:shadow-md transition-all duration-200 border border-gray-200"
+                    >
+                      Reset all
+                    </button>
+                    <button
+                      onClick={() => refetch()}
+                      className="px-3 py-2.5 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 rounded-lg hover:shadow-md transition-all duration-200 border border-emerald-200 flex items-center justify-center"
+                    >
+                      <FaSyncAlt className="text-sm" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Sort By */}
-            <div className="flex items-center gap-2 text-sm">
-              <label className="text-gray-600 font-medium">Sort by:</label>
-              <select
-                name="sortBy"
-                value={filters.sortBy}
-                onChange={handleFilterChange}
-                className="px-3 py-2 border border-emerald-200 rounded-lg bg-white/60 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200"
-              >
-                <option value="newest">Newest first</option>
-                <option value="oldest">Oldest first</option>
-                <option value="title">Title A–Z</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div
-            className={`${
-              showFilters ? "block" : "hidden"
-            } lg:block transition-all duration-200`}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-              <div>
-                <label className="block mb-2 text-sm font-semibold text-gray-700">
-                  <span className="inline-flex items-center gap-2">
-                    <FaTag className="text-emerald-600" />
-                    Item Type
-                  </span>
-                </label>
-                <select
-                  name="postType"
-                  value={filters.postType}
-                  onChange={handleFilterChange}
-                  className="w-full px-3 py-2.5 border border-emerald-200 rounded-lg text-sm bg-white/60 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200"
-                >
-                  <option value="all">All types</option>
-                  <option value="lost">Lost items</option>
-                  <option value="found">Found items</option>
-                </select>
+            {/* Stats */}
+            <div className="flex flex-wrap justify-between items-center pt-3 border-t border-emerald-100 text-xs sm:text-sm">
+              <div className="text-gray-600 font-medium mb-2 sm:mb-0">
+                <span className="text-emerald-700 font-bold">
+                  {filteredItems.length}
+                </span>{" "}
+                of <span className="font-bold">{items.length}</span> items
               </div>
-
-              <div>
-                <label className="block mb-2 text-sm font-semibold text-gray-700">
-                  <span className="inline-flex items-center gap-2">
-                    <FaTag className="text-emerald-600" />
-                    Category
-                  </span>
-                </label>
-                <select
-                  name="category"
-                  value={filters.category}
-                  onChange={handleFilterChange}
-                  className="w-full px-3 py-2.5 border border-emerald-200 rounded-lg text-sm bg-white/60 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200"
-                  disabled={categories.length === 0}
-                >
-                  <option value="all">All categories</option>
-                  {categories.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block mb-2 text-sm font-semibold text-gray-700">
-                  <span className="inline-flex items-center gap-2">
-                    <FaMapMarkerAlt className="text-emerald-600" />
-                    Location
-                  </span>
-                </label>
-                <select
-                  name="location"
-                  value={filters.location}
-                  onChange={handleFilterChange}
-                  className="w-full px-3 py-2.5 border border-emerald-200 rounded-lg text-sm bg-white/60 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200"
-                  disabled={locations.length === 0}
-                >
-                  <option value="all">All locations</option>
-                  {locations.map((l) => (
-                    <option key={l} value={l}>
-                      {l}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block mb-2 text-sm font-semibold text-gray-700">
-                  <span className="inline-flex items-center gap-2">
-                    <FaHome className="text-emerald-600" />
-                    Actions
-                  </span>
-                </label>
-                <div className="flex gap-2">
-                  <button
-                    onClick={resetFilters}
-                    className="flex-1 px-3 py-2.5 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 text-sm font-semibold rounded-lg hover:shadow-md transition-all duration-200 border border-gray-200"
-                  >
-                    Reset all
-                  </button>
-                  <button
-                    onClick={() => refetch()}
-                    className="px-3 py-2.5 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 rounded-lg hover:shadow-md transition-all duration-200 border border-emerald-200 flex items-center justify-center"
-                  >
-                    <FaSyncAlt className="text-sm" />
-                  </button>
+              <div className="flex items-center gap-3 text-gray-600">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                  <span>Found</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                  <span>Lost</span>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Stats */}
-          <div className="flex flex-wrap justify-between items-center pt-3 border-t border-emerald-100 text-xs sm:text-sm">
-            <div className="text-gray-600 font-medium mb-2 sm:mb-0">
-              <span className="text-emerald-700 font-bold">
-                {filteredItems.length}
-              </span>{" "}
-              of <span className="font-bold">{items.length}</span> items
-            </div>
-            <div className="flex items-center gap-3 text-gray-600">
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span>Found</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                <span>Lost</span>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Results */}
-        {isError ? (
-          <div className="bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-2xl p-8 text-center backdrop-blur-sm">
-            <FaExclamationTriangle className="text-red-500 text-4xl mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-red-800 mb-2">
-              Error loading items
-            </h3>
-            <p className="text-red-600 mb-4 max-w-md mx-auto text-sm">
-              Unable to load items at the moment. Please check your connection.
-            </p>
-            <button
-              onClick={() => refetch()}
-              className="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white text-sm font-bold rounded-lg hover:shadow-md transition-all duration-200"
-            >
-              Try again
-            </button>
-          </div>
-        ) : filteredItems.length === 0 && !isLoading ? (
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 p-10 text-center">
-            <FaSearch className="text-gray-300 text-5xl mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
-              No items found
-            </h3>
-            <p className="text-gray-600 mb-5 max-w-md mx-auto text-sm">
-              No items match your search criteria. Try adjusting filters or
-              search terms.
-            </p>
-            <button
-              onClick={resetFilters}
-              className="group inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-bold rounded-lg hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-            >
-              <FaTimes className="text-sm" />
-              Reset all filters
-            </button>
-          </div>
-        ) : (
-          <>
-            {/* Items Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-6">
-              {isLoading
-                ? Array.from({ length: itemsPerPage }).map((_, idx) => (
+        {/* Main Content: Results */}
+        <div className="w-full lg:w-3/4 flex-1">
+          {isError ? (
+            <div className="bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-2xl p-8 text-center backdrop-blur-sm">
+              <FaExclamationTriangle className="text-red-500 text-4xl mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-red-800 mb-2">
+                Error loading items
+              </h3>
+              <p className="text-red-600 mb-4 max-w-md mx-auto text-sm">
+                Unable to load items at the moment. Please check your connection.
+              </p>
+              <button
+                onClick={() => refetch()}
+                className="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white text-sm font-bold rounded-lg hover:shadow-md transition-all duration-200"
+              >
+                Try again
+              </button>
+            </div>
+          ) : filteredItems.length === 0 && !isLoading ? (
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 p-10 text-center">
+              <FaSearch className="text-gray-300 text-5xl mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                No items found
+              </h3>
+              <p className="text-gray-600 mb-5 max-w-md mx-auto text-sm">
+                No items match your search criteria. Try adjusting filters or
+                search terms.
+              </p>
+              <button
+                onClick={resetFilters}
+                className="group inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-bold rounded-lg hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+              >
+                <FaTimes className="text-sm" />
+                Reset all filters
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Items Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5 mb-6">
+                {isLoading
+                  ? Array.from({ length: itemsPerPage }).map((_, idx) => (
                     <ItemCardSkeleton key={idx} />
                   ))
-                : currentItems.map((item) => (
+                  : currentItems.map((item) => (
                     <ItemCard
                       key={item._id}
                       item={item}
                       onViewDetails={handleViewDetails}
                     />
                   ))}
-            </div>
+              </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center mt-6">
-                <nav className="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 px-3 py-2">
-                  <button
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    className="p-2 rounded-xl border border-emerald-200 hover:bg-emerald-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                  >
-                    <FaChevronLeft className="text-sm" />
-                  </button>
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-6">
+                  <nav className="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 px-3 py-2">
+                    <button
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-xl border border-emerald-200 hover:bg-emerald-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    >
+                      <FaChevronLeft className="text-sm" />
+                    </button>
 
-                  {getVisiblePages().map((pageNum, index) =>
-                    pageNum === "..." ? (
-                      <span
-                        key={`dots-${index}`}
-                        className="px-2 py-1 text-gray-500 text-sm"
-                      >
-                        ...
-                      </span>
-                    ) : (
-                      <button
-                        key={pageNum}
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={`px-3 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                          currentPage === pageNum
+                    {getVisiblePages().map((pageNum, index) =>
+                      pageNum === "..." ? (
+                        <span
+                          key={`dots-${index}`}
+                          className="px-2 py-1 text-gray-500 text-sm"
+                        >
+                          ...
+                        </span>
+                      ) : (
+                        <button
+                          key={pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`px-3 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200 ${currentPage === pageNum
                             ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md"
                             : "text-gray-700 hover:bg-emerald-50"
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    )
-                  )}
+                            }`}
+                        >
+                          {pageNum}
+                        </button>
+                      )
+                    )}
 
-                  <button
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(totalPages, p + 1))
-                    }
-                    disabled={currentPage === totalPages}
-                    className="p-2 rounded-xl border border-emerald-200 hover:bg-emerald-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                  >
-                    <FaChevronRight className="text-sm" />
-                  </button>
-                </nav>
-              </div>
-            )}
-          </>
-        )}
+                    <button
+                      onClick={() =>
+                        setCurrentPage((p) => Math.min(totalPages, p + 1))
+                      }
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-xl border border-emerald-200 hover:bg-emerald-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    >
+                      <FaChevronRight className="text-sm" />
+                    </button>
+                  </nav>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

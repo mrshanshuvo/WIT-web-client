@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import blogPostsData from "./blogPosts.json";
+import { axiosInstance } from "../../api/api";
 import {
   FaCalendarAlt,
   FaUser,
@@ -19,9 +19,55 @@ import {
   FaLightbulb,
   FaCog,
   FaSortAmountDown,
+  FaListUl,
+  FaHome,
+  FaSyncAlt,
 } from "react-icons/fa";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import { useActionMenu } from "../../hooks/useActionMenu";
+
+const CustomSelect = ({ value, options, onChange, name, disabled = false }) => {
+  const { isOpen, toggleMenu, closeMenu, menuRef } = useActionMenu();
+  const selectedOption = options.find((o) => o.value === value) || options[0];
+
+  return (
+    <div className="relative w-full" ref={menuRef}>
+      <button
+        type="button"
+        onClick={toggleMenu}
+        disabled={disabled}
+        className={`w-full px-3 py-2.5 text-left border rounded-lg text-sm bg-white/60 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 flex justify-between items-center ${disabled ? "opacity-50 cursor-not-allowed border-gray-200" : "border-emerald-200 hover:border-emerald-300"
+          }`}
+      >
+        <span className="truncate pr-4">{selectedOption?.label}</span>
+        {isOpen ? <FaCaretUp className="text-emerald-600 flex-shrink-0" /> : <FaCaretDown className="text-gray-400 flex-shrink-0" />}
+      </button>
+
+      {isOpen && !disabled && (
+        <ul className="absolute z-[100] w-full mt-1.5 bg-white border border-emerald-100 rounded-xl shadow-2xl overflow-hidden text-sm max-h-60 overflow-y-auto">
+          {options.map((opt) => (
+            <li key={opt.value}>
+              <button
+                type="button"
+                onClick={() => {
+                  onChange({ target: { name, value: opt.value } });
+                  closeMenu();
+                }}
+                className={`w-full text-left px-4 py-3 transition-colors ${value === opt.value
+                  ? "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-800 font-bold border-l-2 border-emerald-500"
+                  : "text-gray-700 hover:bg-emerald-50 border-l-2 border-transparent"
+                  }`}
+              >
+                {opt.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
 
 const Blog = () => {
   const [posts, setPosts] = useState([]);
@@ -34,11 +80,21 @@ const Blog = () => {
   const [activeFiltersCount, setActiveFiltersCount] = useState(0);
 
   useEffect(() => {
-    if (blogPostsData && Array.isArray(blogPostsData)) {
-      setPosts(blogPostsData);
-      setFilteredPosts(blogPostsData);
-    }
-    setIsLoading(false);
+    const fetchBlogs = async () => {
+      try {
+        const res = await axiosInstance.get("/blogs");
+        if (res.data && Array.isArray(res.data)) {
+          setPosts(res.data);
+          setFilteredPosts(res.data);
+        }
+      } catch (err) {
+        console.error("Error fetching blogs:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBlogs();
   }, []);
 
   useEffect(() => {
@@ -130,6 +186,12 @@ const Blog = () => {
     setShowFilters(false);
   };
 
+  const handleManualFilterChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "sortBy") setSortBy(value);
+    if (name === "category") setSelectedCategory(value);
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -161,272 +223,149 @@ const Blog = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-emerald-50 py-8 px-4 sm:px-6 lg:px-8 relative">
       {/* Background Decorations */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-16 left-10 w-64 h-64 bg-emerald-200 rounded-full blur-3xl" />
         <div className="absolute bottom-16 right-10 w-72 h-72 bg-teal-200 rounded-full blur-3xl" />
       </div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-8"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-full mb-3 border border-emerald-200">
-            <FaNewspaper className="text-emerald-600 text-base" />
-            <span className="font-semibold text-emerald-800 text-sm">
-              WhereIsIt Blog
-            </span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-emerald-700 to-teal-800 bg-clip-text text-transparent mb-2">
-            Discover &amp; learn
-          </h1>
-          <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Tips, stories, and updates about lost and found items in your
-            community.
-          </p>
-        </motion.div>
-
-        {/* Search and Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 p-5 mb-6"
-        >
-          {/* Search Input */}
-          <div className="relative mb-4 group">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm group-hover:text-emerald-500 transition-colors duration-200" />
-            <input
-              type="text"
-              placeholder="Search blog posts..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-9 py-3 border border-emerald-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all duration-200 bg-white/60 text-sm text-gray-800 placeholder-gray-500"
-            />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-500 transition-colors"
-              >
-                <FaTimes />
-              </button>
-            )}
-          </div>
-
-          {/* Filter Header */}
-          <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="lg:hidden flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 text-sm font-semibold rounded-lg hover:shadow-md transition-all duration-200"
-            >
-              <FaFilter className="text-sm" />
-              <span>
-                Filters{activeFiltersCount > 0 && ` (${activeFiltersCount})`}
-              </span>
-              {showFilters ? <FaCaretUp /> : <FaCaretDown />}
-            </button>
-
-            <div className="hidden lg:flex items-center gap-2 text-sm font-semibold text-gray-900">
-              <FaFilter className="text-emerald-600" />
-              <span>Filter posts</span>
-            </div>
-
-            {/* Sort By */}
-            <div className="flex items-center gap-2 text-sm">
-              <label className="text-gray-600 font-medium">Sort by:</label>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 border border-emerald-200 rounded-lg bg-white/60 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all duration-200"
-              >
-                <option value="newest">Newest first</option>
-                <option value="oldest">Oldest first</option>
-                <option value="popular">Most popular</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div
-            className={`${
-              showFilters ? "block" : "hidden"
-            } lg:block transition-all duration-200`}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div>
-                <label className="block mb-2 text-sm font-semibold text-gray-700">
-                  <span className="inline-flex items-center gap-2">
-                    <FaTag className="text-emerald-600" />
-                    Category
-                  </span>
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                  {categories.map((category) => {
-                    if (category === "all") return null;
-                    const Icon = getCategoryIcon(category);
-                    return (
-                      <button
-                        key={category}
-                        onClick={() => setSelectedCategory(category)}
-                        className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border text-xs sm:text-sm font-medium transition-all duration-200 ${
-                          selectedCategory === category
-                            ? `bg-gradient-to-r ${getCategoryColor(
-                                category
-                              )} text-white border-transparent shadow-md`
-                            : "bg-white text-gray-700 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50"
-                        }`}
-                      >
-                        <Icon className="text-xs" />
-                        <span>{category}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <label className="block mb-2 text-sm font-semibold text-gray-700">
-                  <span className="inline-flex items-center gap-2">
-                    <FaSortAmountDown className="text-emerald-600" />
-                    Sort options
-                  </span>
-                </label>
-                <div className="grid grid-cols-2 gap-2.5">
-                  <button
-                    onClick={() => setSortBy("newest")}
-                    className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all duration-200 ${
-                      sortBy === "newest"
-                        ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-transparent shadow-md"
-                        : "bg-white text-gray-700 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50"
-                    }`}
-                  >
-                    Newest
-                  </button>
-                  <button
-                    onClick={() => setSortBy("oldest")}
-                    className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all duration-200 ${
-                      sortBy === "oldest"
-                        ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-transparent shadow-md"
-                        : "bg-white text-gray-700 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50"
-                    }`}
-                  >
-                    Oldest
-                  </button>
-                  <button
-                    onClick={() => setSortBy("popular")}
-                    className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all duration-200 ${
-                      sortBy === "popular"
-                        ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-transparent shadow-md"
-                        : "bg-white text-gray-700 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50"
-                    }`}
-                  >
-                    Popular
-                  </button>
-                  <button
-                    onClick={resetFilters}
-                    className="px-3 py-2 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:shadow-md transition-all duration-200"
-                  >
-                    Reset all
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Active Filters */}
-          <div className="flex flex-wrap gap-2 pt-3 border-t border-emerald-100 text-xs sm:text-sm">
-            {selectedCategory !== "all" && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 font-medium rounded-full border border-emerald-200">
-                <FaTag className="text-xs" />
-                {selectedCategory}
-                <button
-                  onClick={() => setSelectedCategory("all")}
-                  className="ml-1 hover:text-emerald-900"
-                >
-                  ×
-                </button>
-              </span>
-            )}
-            {sortBy !== "newest" && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 font-medium rounded-full border border-gray-200">
-                <FaSortAmountDown className="text-xs" />
-                {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
-                <button
-                  onClick={() => setSortBy("newest")}
-                  className="ml-1 hover:text-gray-900"
-                >
-                  ×
-                </button>
-              </span>
-            )}
-            {searchTerm && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 font-medium rounded-full border border-gray-200">
-                <FaSearch className="text-xs" />"{searchTerm}"
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 relative z-10 items-start">
+        {/* Sidebar: Search + Filters */}
+        <div className="w-full lg:w-1/4 lg:sticky lg:top-8 flex-shrink-0 z-20">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-emerald-100 p-4 sm:p-5">
+            {/* Search Bar */}
+            <div className="relative mb-4 group">
+              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm group-hover:text-emerald-500 transition-colors duration-200" />
+              <input
+                type="text"
+                placeholder="Search blog posts..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-11 pr-9 py-3 border border-emerald-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all duration-200 bg-white/60 text-sm text-gray-800 placeholder-gray-500"
+              />
+              {searchTerm && (
                 <button
                   onClick={() => setSearchTerm("")}
-                  className="ml-1 hover:text-gray-900"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-500 transition-colors"
                 >
-                  ×
+                  <FaTimes />
                 </button>
-              </span>
-            )}
-          </div>
-        </motion.div>
+              )}
+            </div>
 
-        {/* Results Info */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="flex flex-col md:flex-row justify-between items-center mb-6 gap-3 text-sm"
-        >
-          <div className="text-gray-600 font-medium">
-            Showing{" "}
-            <span className="text-emerald-700 font-bold">
-              {filteredPosts.length}
-            </span>{" "}
-            of <span className="font-bold">{posts.length}</span> posts
-          </div>
+            {/* Filter Header */}
+            <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="lg:hidden flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 text-sm font-semibold rounded-lg hover:shadow-md transition-all duration-200"
+              >
+                <FaFilter className="text-sm" />
+                <span>
+                  Filters{activeFiltersCount > 0 && ` (${activeFiltersCount})`}
+                </span>
+                {showFilters ? <FaCaretUp /> : <FaCaretDown />}
+              </button>
 
-          <div className="flex flex-wrap gap-2">
-            {categories.slice(1).map((category) => {
-              const Icon = getCategoryIcon(category);
-              const count = posts.filter(
-                (post) => post.category === category
-              ).length;
-              return (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border transition-all duration-200 ${
-                    selectedCategory === category
-                      ? `bg-gradient-to-r ${getCategoryColor(
-                          category
-                        )} text-white border-transparent shadow-md`
-                      : "bg-white text-gray-700 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50"
-                  }`}
-                >
-                  <Icon className="text-xs" />
-                  <span>{category}</span>
-                  <span
-                    className={`px-1.5 py-0.5 rounded-full text-[11px] ${
-                      selectedCategory === category
-                        ? "bg-white/20"
-                        : "bg-emerald-100 text-emerald-700"
-                    }`}
-                  >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
+              <div className="hidden lg:flex items-center gap-2 text-sm font-semibold text-gray-900">
+                <FaFilter className="text-emerald-600" />
+                <span>Filter posts</span>
+              </div>
+            </div>
+
+            {/* Filter Section */}
+            <div
+              className={`${showFilters ? "block" : "hidden"
+                } lg:block transition-all duration-200`}
+            >
+              <div className="flex flex-col gap-4 mb-4">
+                {/* Sort By */}
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-gray-700">
+                    <span className="inline-flex items-center gap-2">
+                      <FaListUl className="text-emerald-600" />
+                      Sort by
+                    </span>
+                  </label>
+                  <CustomSelect
+                    name="sortBy"
+                    value={sortBy}
+                    onChange={handleManualFilterChange}
+                    options={[
+                      { value: "newest", label: "Newest first" },
+                      { value: "oldest", label: "Oldest first" },
+                      { value: "popular", label: "Most popular" }
+                    ]}
+                  />
+                </div>
+
+                {/* Category */}
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-gray-700">
+                    <span className="inline-flex items-center gap-2">
+                      <FaTag className="text-emerald-600" />
+                      Category
+                    </span>
+                  </label>
+                  <CustomSelect
+                    name="category"
+                    value={selectedCategory}
+                    onChange={handleManualFilterChange}
+                    options={[
+                      { value: "all", label: "All categories" },
+                      ...categories.filter(c => c !== "all").map(c => ({ value: c, label: c }))
+                    ]}
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-gray-700">
+                    <span className="inline-flex items-center gap-2">
+                      <FaHome className="text-emerald-600" />
+                      Actions
+                    </span>
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={resetFilters}
+                      className="flex-1 px-3 py-2.5 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 text-sm font-semibold rounded-lg hover:shadow-md transition-all duration-200 border border-gray-200"
+                    >
+                      Reset all
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsLoading(true);
+                        axiosInstance.get("/blogs").then(res => {
+                          if (res.data && Array.isArray(res.data)) {
+                            setPosts(res.data);
+                            setFilteredPosts(res.data);
+                          }
+                          setIsLoading(false);
+                        });
+                      }}
+                      className="px-3 py-2.5 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 rounded-lg hover:shadow-md transition-all duration-200 border border-emerald-200 flex items-center justify-center"
+                    >
+                      <FaSyncAlt className="text-sm" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div className="flex flex-wrap justify-between items-center pt-3 border-t border-emerald-100 text-xs sm:text-sm">
+              <div className="text-gray-600 font-medium">
+                <span className="text-emerald-700 font-bold">
+                  {filteredPosts.length}
+                </span>{" "}
+                of <span className="font-bold">{posts.length}</span> posts
+              </div>
+            </div>
           </div>
-        </motion.div>
+        </div>
+
+        {/* Main Content: Results */}
+        <div className="w-full lg:w-3/4 flex-1">
 
         {/* Blog Posts Grid */}
         {filteredPosts.length === 0 ? (
@@ -447,14 +386,14 @@ const Blog = () => {
             {(searchTerm ||
               selectedCategory !== "all" ||
               sortBy !== "newest") && (
-              <button
-                onClick={resetFilters}
-                className="group inline-flex items-center gap-2 px-7 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-bold rounded-lg hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-              >
-                <FaTimes className="text-sm" />
-                Reset all filters
-              </button>
-            )}
+                <button
+                  onClick={resetFilters}
+                  className="group inline-flex items-center gap-2 px-7 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-bold rounded-lg hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+                >
+                  <FaTimes className="text-sm" />
+                  Reset all filters
+                </button>
+              )}
           </motion.div>
         ) : (
           <motion.div
@@ -560,6 +499,7 @@ const Blog = () => {
             })}
           </motion.div>
         )}
+        </div>
       </div>
     </div>
   );
