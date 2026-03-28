@@ -20,25 +20,32 @@ const AuthProvider = ({ children }) => {
   const [authChecked, setAuthChecked] = useState(false);
 
   // Common function to handle backend authentication
-  const handleBackendAuth = async (firebaseUser) => {
+  const handleBackendAuth = async (firebaseUser, extraData = {}) => {
     try {
       const idToken = await firebaseUser.getIdToken();
-      const displayName = firebaseUser.displayName || "";
+      
+      // Use provided extraData OR fall back to firebase profile
+      const name = extraData.name || firebaseUser.displayName || "";
+      const photoURL = extraData.photoURL || firebaseUser.photoURL || "";
 
       // Send to backend for verification and session creation
       const response = await axiosInstance.post(
         "/users/firebase-login",
-        { idToken, name: displayName },
+        { idToken, name, photoURL },
         { withCredentials: true }
       );
 
       // Return combined user data
-      return {
+      const userData = {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
-        name: displayName,
+        name: name,
+        photoURL: photoURL,
         ...(response.data.user || {}),
       };
+      
+      setUser(userData);
+      return userData;
     } catch (error) {
       console.error("Backend auth error:", error);
       throw error;
@@ -72,9 +79,7 @@ const AuthProvider = ({ children }) => {
         email,
         password
       );
-      const userData = await handleBackendAuth(userCredential.user);
-      setUser(userData);
-      return userData;
+      return await handleBackendAuth(userCredential.user);
     } catch (error) {
       console.error("Login error:", error);
       setUser(null);
@@ -89,9 +94,7 @@ const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const userData = await handleBackendAuth(result.user);
-      setUser(userData);
-      return userData;
+      return await handleBackendAuth(result.user);
     } catch (error) {
       console.error("Google sign-in error:", error);
       setUser(null);
@@ -119,15 +122,15 @@ const AuthProvider = ({ children }) => {
   // useEffect to sync auth state with backend
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
+      // Only sync with backend if no user object exists in state (like on fresh page load)
+      if (currentUser && !user) {
         try {
-          const userData = await handleBackendAuth(currentUser);
-          setUser(userData);
+          await handleBackendAuth(currentUser);
         } catch (error) {
           console.error("Error syncing auth with backend:", error);
           setUser(null);
         }
-      } else {
+      } else if (!currentUser) {
         setUser(null);
       }
       setAuthChecked(true);
@@ -146,6 +149,7 @@ const AuthProvider = ({ children }) => {
     signInUser,
     signInWithGoogle,
     signOutUser,
+    handleBackendAuth,
     updateUserProfile,
   };
 

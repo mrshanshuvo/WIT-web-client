@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext/AuthContext";
 import { useNavigate } from "react-router";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { FcGoogle } from "react-icons/fc";
 import { FaArrowRight } from "react-icons/fa";
 
@@ -12,20 +12,10 @@ const SocialLogin = ({ from }) => {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
-      toast.success("🎉 Login successful!", {
-        style: {
-          background: "#10b981",
-          color: "#ffffff",
-        },
-      });
+      toast.success("🎉 Login successful!");
       navigate(from || "/", { replace: true });
     } catch (error) {
-      toast.error(`❌ ${error.message}`, {
-        style: {
-          background: "#ef4444",
-          color: "#ffffff",
-        },
-      });
+      toast.error(`❌ ${error.message}`);
       console.error("Google sign-in error:", error);
     }
   };
