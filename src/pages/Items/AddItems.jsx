@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "sonner";
 import { auth } from "../../firebase/firebase.config";
 import { axiosInstance } from "../../api/api";
 import {
@@ -109,10 +108,7 @@ const AddItems = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      toast.success("🎉 Item posted successfully!", {
-        position: "top-center",
-        autoClose: 3000,
-      });
+      toast.success("🎉 Item posted successfully!");
 
       setFormData({
         postType: "lost",
@@ -128,10 +124,7 @@ const AddItems = () => {
 
       setTimeout(() => navigate("/lost-found-items"), 2000);
     } catch (error) {
-      toast.error(`❌ Error: ${error.message}`, {
-        position: "top-center",
-        autoClose: 3000,
-      });
+      toast.error(`❌ Error: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }

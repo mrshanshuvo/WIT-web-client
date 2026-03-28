@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import RootLayout from "../layouts/RootLayout";
+import AuthLayout from "../layouts/AuthLayout";
 import Home from "../pages/home/Home";
 import Register from "../pages/auth/Register";
 import SignIn from "../pages/auth/SignIn";
@@ -24,8 +25,6 @@ const router = createBrowserRouter([
     children: [
       // 🏠 Public routes
       { index: true, element: <Home /> },
-      { path: "register", element: <Register /> },
-      { path: "sign-in", element: <SignIn /> },
       { path: "lost-found-items", element: <LostFoundItems /> },
       { path: "inventory/:id", element: <ItemDetails /> },
       { path: "recovered-items", element: <RecoveredItems /> },
@@ -73,6 +72,14 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+    ],
+  },
+  {
+    path: "/",
+    element: <AuthLayout />,
+    children: [
+      { path: "register", element: <Register /> },
+      { path: "sign-in", element: <SignIn /> },
     ],
   },
 ]);

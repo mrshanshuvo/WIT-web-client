@@ -6,6 +6,7 @@ import AuthProvider from "./contexts/AuthContext/AuthProvider.jsx";
 // TanStack Query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import router from "./routes/router.jsx";
+import { Toaster } from "sonner";
 
 // Create QueryClient
 const queryClient = new QueryClient();
@@ -15,6 +16,7 @@ createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <RouterProvider router={router} />
+        <Toaster richColors position="top-center" closeButton />
       </AuthProvider>
     </QueryClientProvider>
   </StrictMode>

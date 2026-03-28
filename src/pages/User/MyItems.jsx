@@ -1,8 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router";
 import { auth } from "../../firebase/firebase.config";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "sonner";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import ErrorMessage from "../../components/error-message/ErrorMessage";
 import {
@@ -136,15 +135,15 @@ const MyItems = () => {
   const getPostTypeConfig = (postType) =>
     postType === "found"
       ? {
-          color:
-            "bg-gradient-to-r from-teal-100 to-emerald-100 text-teal-800 border-teal-200",
-          icon: FaSearch,
-        }
+        color:
+          "bg-gradient-to-r from-teal-100 to-emerald-100 text-teal-800 border-teal-200",
+        icon: FaSearch,
+      }
       : {
-          color:
-            "bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 border-emerald-200",
-          icon: FaBox,
-        };
+        color:
+          "bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 border-emerald-200",
+        icon: FaBox,
+      };
 
   if (isLoading) {
     return (
@@ -418,7 +417,7 @@ const MyItems = () => {
                       <div className="flex gap-1.5">
                         {recovery &&
                           recovery.originalOwner?.email ===
-                            auth.currentUser?.email &&
+                          auth.currentUser?.email &&
                           recovery.recoveryStatus === "pending" && (
                             <button
                               onClick={() =>

@@ -1,8 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router";
 import { auth } from "../../firebase/firebase.config";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "sonner";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import ErrorMessage from "../../components/error-message/ErrorMessage";
 import { useQuery } from "@tanstack/react-query";
