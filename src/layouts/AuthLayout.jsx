@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, Outlet } from "react-router";
 import { FaArrowLeft, FaShieldAlt } from "react-icons/fa";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 
 const AuthLayout = () => {

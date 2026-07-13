@@ -19,7 +19,7 @@ import {
 import { axiosInstance } from "../../api/api";
 
 const Register = () => {
-  const { createUser, updateUserProfile, setUser, handleBackendAuth } =
+  const { createUser, updateUserProfile, handleBackendAuth } =
     useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -98,7 +98,6 @@ const Register = () => {
     setLoading(true);
     const form = e.target;
     const name = form.name.value;
-    const email = form.email.value;
     const photoURL = form.photoURL.value;
     const password = form.password.value;
 
